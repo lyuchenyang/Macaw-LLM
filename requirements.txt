@@ -1,0 +1,27 @@
+torch == 2.0.0
+torchvision == 0.15.1
+evaluate == 0.4.0
+datasets == 2.10.0
+accelerate == 0.19.0
+fairscale == 0.4.13
+tensorboard == 2.12.1
+sentencepiece == 0.1.97
+protobuf
+scikit-learn
+moviepy
+ffmpeg-python
+tqdm
+pandas
+opencv-python
+clip
+openai-whisper
+appdirs
+loralib
+bitsandbytes
+black
+black[jupyter]
+fire
+transformers==4.29.0
+gradio
+peft
+deepspeed
