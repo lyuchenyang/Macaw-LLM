@@ -93,3 +93,16 @@ python setup.py install
 While our model is still in its early stages, we believe that M2LM paves the way for future research in the realm of multi-modal language modeling. The integration of diverse data modalities holds immense potential for pushing the boundaries of artificial intelligence and enhancing our understanding of complex real-world scenarios. By introducing M2LM, we hope to inspire further exploration and innovation in this exciting area of study.
 
 We welcome contributions from the community to improve and expand M2LM's capabilities. 🤝
+
+## Citation
+
+```bibtex
+@misc{m2lm,
+  author = {Chenyang Lyu and Bingshuai Liu and Zefeng Du and Longyue Wang},
+  title = {M2LM: Multi-Modal Language Modeling with Image, Video, Audio, and Text Integration},
+  year = {2023},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/lyuchenyang/M2LM}},
+}
+```
