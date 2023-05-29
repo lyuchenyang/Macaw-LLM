@@ -13,7 +13,7 @@
   
 <!-- **Authors:** -->
 
-**_Chenyang Lyu¹, Bingshuai Liu², Minghao Wu³, Zefeng Du⁴, Longyue Wang⁵_**
+	**_<a href="https://lyuchenyang.github.io">Chenyang Lyu¹</a>, Bingshuai Liu², <a href="https://minghao-wu.github.io/">Minghao Wu³</a>, <a href="https://seeledu.github.io/index-en.html">Zefeng Du⁴</a>, <a href="http://www.longyuewang.com/">Longyue Wang⁵</a>_**
 
 <!-- **Affiliations:** -->
 
@@ -40,7 +40,7 @@ Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling
 
 <!-- ![Figure Description or Alt Text](alignment.png) -->
 
-In recent years, the field of language modeling has witnessed remarkable advancements. However, the integration of multiple modalities, such as images, videos, audios, and text, has remained a challenging task. M2LM is a model of its kind, bringing together state-of-the-art models for processing visual, auditory, and textual information, namely CLIP, Whisper, and LLaMA.
+In recent years, the field of language modeling has witnessed remarkable advancements. However, the integration of multiple modalities, such as images, videos, audios, and text, has remained a challenging task. Macaw-LLM is a model of its kind, bringing together state-of-the-art models for processing visual, auditory, and textual information, namely CLIP, Whisper, and LLaMA.
 
 ## Key Features 🔑
 
@@ -75,7 +75,7 @@ To install Macaw-LLM, follow these steps:
 1. Clone the repository: 
   `git clone https://github.com/lyuchenyang/Macaw-LLM.git`
 2. Change to the Macaw-LLM directory: 
-  `cd M2LM`
+  `cd Macaw-LLM`
 3. Install required packages: 
   `pip install -r requirements.txt`
 4. Install ffmpeg: 
@@ -88,7 +88,6 @@ python setup.py install
 ```
 
 ## Usage 🚀
-
 1. Downloading dataset: 
 	1) Text data: https://github.com/tatsu-lab/stanford_alpaca/blob/main/alpaca_data.json 
 	2) Image data: https://cocodataset.org/#home 
@@ -103,9 +102,9 @@ python setup.py install
 
 ## Future Work and Contributions 🚀
 
-While our model is still in its early stages, we believe that M2LM paves the way for future research in the realm of multi-modal language modeling. The integration of diverse data modalities holds immense potential for pushing the boundaries of artificial intelligence and enhancing our understanding of complex real-world scenarios. By introducing M2LM, we hope to inspire further exploration and innovation in this exciting area of study.
+While our model is still in its early stages, we believe that Macaw-LLM paves the way for future research in the realm of multi-modal language modeling. The integration of diverse data modalities holds immense potential for pushing the boundaries of artificial intelligence and enhancing our understanding of complex real-world scenarios. By introducing Macaw-LLM, we hope to inspire further exploration and innovation in this exciting area of study.
 
-We welcome contributions from the community to improve and expand M2LM's capabilities. 🤝
+We welcome contributions from the community to improve and expand Macaw-LLM's capabilities. 🤝
 
 ## Citation
 
