@@ -41,6 +41,14 @@ Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling
 
 In recent years, the field of language modeling has witnessed remarkable advancements. However, the integration of multiple modalities, such as images, videos, audios, and text, has remained a challenging task. M2LM is a model of its kind, bringing together state-of-the-art models for processing visual, auditory, and textual information, namely CLIP, Whisper, and LLaMA.
 
+## Key Features 🔑
+
+Macaw-LLM boasts the following unique features:
+
+1. **Simple & Fast Alignment**: Macaw-LLM enables seamless integration of multi-modal data through simple and fast alignment to LLM embeddings. This efficient process ensures quick adaptation of diverse data types.
+2. **One-Stage Instruction Fine-Tuning**: Our model streamlines the adaptation process through one-stage instruction fine-tuning, promoting a more efficient learning experience.
+
+
 ## Architecture 🔧
 
 Macaw-LLM is composed of three main components:
