@@ -73,33 +73,60 @@ Our novel alignment strategy enables faster adaptation by efficiently bridging m
 
 To install Macaw-LLM, follow these steps:
 
-1. Clone the repository: 
-  `git clone https://github.com/lyuchenyang/Macaw-LLM.git`
-2. Change to the Macaw-LLM directory: 
-  `cd Macaw-LLM`
-3. Install required packages: 
-  `pip install -r requirements.txt`
-4. Install ffmpeg: 
-  `yum install ffmpeg -y`
-5. Install apex: 
-```
+```bash
+# Clone the repository
+git clone https://github.com/lyuchenyang/Macaw-LLM.git
+
+# Change to the Macaw-LLM directory
+cd Macaw-LLM
+
+# Install required packages
+pip install -r requirements.txt
+
+# Install ffmpeg
+yum install ffmpeg -y
+
+# Install apex
 git clone https://github.com/NVIDIA/apex.git
 cd apex
 python setup.py install
+cd ..
 ```
 
 ## Usage 🚀
-1. Downloading dataset: 
-	1) Text data: https://github.com/tatsu-lab/stanford_alpaca/blob/main/alpaca_data.json 
-	2) Image data: https://cocodataset.org/#home 
-	3) Video data: https://allenai.org/plato/charades/  and https://video-dialog.com/ 
-2. Dataset preprocessing: 
-	1) Place the data in three modalities to specific folders - 'data/text/', 'data/image/', 'data/video/' 
-	2) Extract frames and audio from videos: `python preprocess_data.py` 
-	3) Transform supervised data to dataset: `python preprocess_data_supervised.py`. 
-	4) Transform unsupervised data to dataset: `python preprocess_data_unsupervised.py`
-3. Training: `./train.sh` - where you can specify the training parameters
-4. Inference: `./inference.sh` - where you can give any customized inputs
+
+1. **Downloading dataset:** 
+   - Text data: [stanford_alpaca/alpaca_data.json](https://github.com/tatsu-lab/stanford_alpaca/blob/main/alpaca_data.json) 
+   - Image data: [COCO Dataset](https://cocodataset.org/#home) 
+   - Video data: [Charades](https://allenai.org/plato/charades/) and [Video Dialog](https://video-dialog.com/) 
+
+2. **Dataset preprocessing:** 
+   - Place the data in three modalities to specific folders - `data/text/`, `data/image/`, `data/video/`
+   - Extract frames and audio from videos: 
+     ```
+     python preprocess_data.py
+     ```
+   - Transform supervised data to dataset: 
+     ```
+     python preprocess_data_supervised.py
+     ```
+   - Transform unsupervised data to dataset: 
+     ```
+     python preprocess_data_unsupervised.py
+     ```
+
+3. **Training:** 
+   - Execute the training script (you can specify the training parameters inside):
+     ```
+     ./train.sh
+     ```
+
+4. **Inference:** 
+   - Execute the inference script (you can give any customized inputs inside):
+     ```
+     ./inference.sh
+     ```
+
 
 ## Future Work and Contributions 🚀
 
