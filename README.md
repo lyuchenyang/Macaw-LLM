@@ -97,8 +97,8 @@ python setup.py install
 	2) Extract frames and audio from videos: `python preprocess_data.py` 
 	3) Transform supervised data to dataset: `python preprocess_data_supervised.py`. 
 	4) Transform unsupervised data to dataset: `python preprocess_data_unsupervised.py`
-3. Training: ./train.sh - where you can specify the training parameters
-4. Inference: ./inference.sh - where you can give any customized inputs
+3. Training: `./train.sh` - where you can specify the training parameters
+4. Inference: `./inference.sh` - where you can give any customized inputs
 
 ## Future Work and Contributions 🚀
 
