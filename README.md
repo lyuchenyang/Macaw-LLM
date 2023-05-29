@@ -1,13 +1,13 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/lyuchenyang/Macaw-M2LM/main/assets/macaw-logo-round.png" alt="Logo" width="200">
+  <img src="https://raw.githubusercontent.com/lyuchenyang/Macaw-LLM/main/assets/macaw-logo-round.png" alt="Logo" width="200">
 </div>
 
 # Macaw-LLM: Multi-Modal Language Modeling with Image, Video, Audio, and Text Integration 🌐🖼️📹🎵📝
 <div align="center">
 <img src="https://img.shields.io/badge/Version-1.0.0-blue.svg" alt="Version">
 <img src="https://img.shields.io/badge/License-CC%20BY%204.0-green.svg" alt="License">
-<img src="https://img.shields.io/github/stars/lyuchenyang/Macaw-M2LM?color=yellow" alt="Stars">
-<img src="https://img.shields.io/github/issues/lyuchenyang/Macaw-M2LM?color=red" alt="Issues">
+<img src="https://img.shields.io/github/stars/lyuchenyang/Macaw-LLM?color=yellow" alt="Stars">
+<img src="https://img.shields.io/github/issues/lyuchenyang/Macaw-LLM?color=red" alt="Issues">
 <img src="https://img.shields.io/badge/python-3.8-purple.svg" alt="Python">
   
   
@@ -21,7 +21,7 @@ _¹ Dublin City University, ² Xiamen University, ³ University of Macau, ⁴ Te
 </div>
 
 
-M2LM is an exploratory endeavor that pioneers multi-modal language modeling by seamlessly combining image, video, audio, and text data, built upon the foundations of CLIP, Whisper, and LLaMA.
+Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling by seamlessly combining image, video, audio, and text data, built upon the foundations of CLIP, Whisper, and LLaMA.
 
 ## Table of Contents 📚
 
@@ -43,13 +43,13 @@ In recent years, the field of language modeling has witnessed remarkable advance
 
 ## Architecture 🔧
 
-M2LM is composed of three main components:
+Macaw-LLM is composed of three main components:
 
 1. **CLIP**: Responsible for encoding images and video frames.
 2. **Whisper**: Responsible for encoding audio data.
 3. **LLM**(LLaMA/Vicuna/Bloom): The language model that encodes instructions and generates responses.
 
-The integration of these models allows M2LM to process and analyze multi-modal data effectively.
+The integration of these models allows Macaw-LLM to process and analyze multi-modal data effectively.
 
 ## Alignment Strategy 📏
 
@@ -61,11 +61,11 @@ Our novel alignment strategy enables faster adaptation by efficiently bridging m
 
 ## Installation 💻
 
-To install M2LM, follow these steps:
+To install Macaw-LLM, follow these steps:
 
 1. Clone the repository: 
   `git clone https://github.com/lyuchenyang/Macaw-LLM.git`
-2. Change to the M2LM directory: 
+2. Change to the Macaw-LLM directory: 
   `cd M2LM`
 3. Install required packages: 
   `pip install -r requirements.txt`
