@@ -1,19 +1,23 @@
-# M2LM: Multi-Modal Language Modeling with Image, Video, Audio, and Text Integration 🌐🖼️📹🎵📝
 <div align="center">
-  <img src="https://img.shields.io/badge/Version-1.0.0-blue.svg" alt="Version">
-  <img src="https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg" alt="License">
-  <img src="https://img.shields.io/github/stars/lyuchenyang/M2LM" alt="Stars">
-  <img src="https://img.shields.io/github/issues/lyuchenyang/M2LM" alt="Issues">
-  <img src="https://img.shields.io/badge/python-3.8-blue.svg" alt="Python">
+  <img src="https://raw.githubusercontent.com/lyuchenyang/Macaw-M2LM/main/assets/macaw-logo-round.png" alt="Logo" width="200">
+</div>
+
+# Macaw-LLM: Multi-Modal Language Modeling with Image, Video, Audio, and Text Integration 🌐🖼️📹🎵📝
+<div align="center">
+<img src="https://img.shields.io/badge/Version-1.0.0-blue.svg" alt="Version">
+<img src="https://img.shields.io/badge/License-CC%20BY%204.0-green.svg" alt="License">
+<img src="https://img.shields.io/github/stars/lyuchenyang/Macaw-M2LM?color=yellow" alt="Stars">
+<img src="https://img.shields.io/github/issues/lyuchenyang/Macaw-M2LM?color=red" alt="Issues">
+<img src="https://img.shields.io/badge/python-3.8-purple.svg" alt="Python">
   
   
 <!-- **Authors:** -->
 
-Chenyang Lyu¹, Bingshuai Liu², Zefeng Du³, Longyue Wang⁴
+**_Chenyang Lyu¹, Bingshuai Liu², Zefeng Du³, Longyue Wang⁴_**
 
 <!-- **Affiliations:** -->
 
-¹ Dublin City University, ² Xiamen University, ³ University of Macau, ⁴ Tencent AI Lab
+_¹ Dublin City University, ² Xiamen University, ³ University of Macau, ⁴ Tencent AI Lab_
 </div>
 
 
@@ -30,7 +34,7 @@ M2LM is an exploratory endeavor that pioneers multi-modal language modeling by s
 
 ## Introduction 📖
 <div align="center">
-  <img src="alignment.png" alt="Figure Description or Alt Text" width="75%">
+  <img src="assets/alignment.png" alt="Figure Description or Alt Text" width="70%">
 </div>
 
 <!-- ![Figure Description or Alt Text](alignment.png) -->
@@ -60,7 +64,7 @@ Our novel alignment strategy enables faster adaptation by efficiently bridging m
 To install M2LM, follow these steps:
 
 1. Clone the repository: 
-  `git clone https://github.com/lyuchenyang/M2LM.git`
+  `git clone https://github.com/lyuchenyang/Macaw-LLM.git`
 2. Change to the M2LM directory: 
   `cd M2LM`
 3. Install required packages: 
