@@ -13,11 +13,11 @@
   
 <!-- **Authors:** -->
 
-**_Chenyang Lyu¹, Bingshuai Liu², Zefeng Du³, Longyue Wang⁴_**
+**_Chenyang Lyu¹, Bingshuai Liu², Minghao Wu³, Zefeng Du⁴, Longyue Wang⁵_**
 
 <!-- **Affiliations:** -->
 
-_¹ Dublin City University, ² Xiamen University, ³ University of Macau, ⁴ Tencent AI Lab_
+_¹ Dublin City University, ² Xiamen University, ³ Monash University, ⁴ University of Macau, ⁵ Tencent AI Lab_
 </div>
 
 
@@ -111,7 +111,7 @@ We welcome contributions from the community to improve and expand M2LM's capabil
 
 ```bibtex
 @misc{Macaw-LLM,
-  author = {Chenyang Lyu and Bingshuai Liu and Zefeng Du and Longyue Wang},
+  author = {Chenyang Lyu and Bingshuai Liu and Minghao Wu and Zefeng Du and Longyue Wang},
   title = {Macaw-LLM: Multi-Modal Language Modeling with Image, Video, Audio, and Text Integration},
   year = {2023},
   publisher = {GitHub},
