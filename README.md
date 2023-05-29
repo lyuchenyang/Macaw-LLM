@@ -26,6 +26,7 @@ Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling
 ## Table of Contents 📚
 
 - [Introduction](#introduction)
+- [Key Features](#Key-Features)
 - [Architecture](#architecture)
 - [Alignment Strategy](#alignment-strategy)
 - [Installation](#installation)
