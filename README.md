@@ -101,7 +101,7 @@ We welcome contributions from the community to improve and expand M2LM's capabil
 ## Citation
 
 ```bibtex
-@misc{m2lm,
+@misc{Macaw-LLM,
   author = {Chenyang Lyu and Bingshuai Liu and Zefeng Du and Longyue Wang},
   title = {M2LM: Multi-Modal Language Modeling with Image, Video, Audio, and Text Integration},
   year = {2023},
