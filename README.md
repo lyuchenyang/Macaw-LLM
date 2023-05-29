@@ -13,7 +13,8 @@
   
 <!-- **Authors:** -->
 
-	**_<a href="https://lyuchenyang.github.io">Chenyang Lyu¹</a>, Bingshuai Liu², <a href="https://minghao-wu.github.io/">Minghao Wu³</a>, <a href="https://seeledu.github.io/index-en.html">Zefeng Du⁴</a>, <a href="http://www.longyuewang.com/">Longyue Wang⁵</a>_**
+**_¹ [Chenyang Lyu](https://lyuchenyang.github.io), ² Bingshuai Liu, ³ [Minghao Wu](https://minghao-wu.github.io/), ⁴ [Zefeng Du](https://seeledu.github.io/index-en.html), ⁵ [Longyue Wang](http://www.longyuewang.com/)_**
+
 
 <!-- **Affiliations:** -->
 
