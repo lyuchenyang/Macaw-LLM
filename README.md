@@ -13,7 +13,8 @@
   
 <!-- **Authors:** -->
 
-**_¹ [Chenyang Lyu](https://lyuchenyang.github.io), ² Bingshuai Liu, ³ [Minghao Wu](https://minghao-wu.github.io/), ⁴ [Zefeng Du](https://seeledu.github.io/index-en.html), ⁵ [Xinting Huang Wang](https://timhuang1.github.io/), ⁵ [Zhaopeng Tu](http://www.zptu.net//), ⁵ [Shuming Shi](https://shumingshi.github.io/), ⁵ [Longyue Wang](http://www.longyuewang.com/)_**
+**_¹ [Chenyang Lyu](https://lyuchenyang.github.io), ² Bingshuai Liu, ³ [Minghao Wu](https://minghao-wu.github.io/), ⁴ [Zefeng Du](https://seeledu.github.io/index-en.html),_**
+**_⁵ [Xinting Huang](https://timhuang1.github.io/), ⁵ [Zhaopeng Tu](http://www.zptu.net//), ⁵ [Shuming Shi](https://shumingshi.github.io/), ⁵ [Longyue Wang](http://www.longyuewang.com/)_**
 
 
 <!-- **Affiliations:** -->
