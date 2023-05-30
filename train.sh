@@ -13,7 +13,7 @@ train_path=$path/run_clm_llms.py
     
 torchrun --nnodes 1 --nproc_per_node 8 \
     ${train_path} \
-    --deepspeed $path/train/deepspeed_config.json \
+    --deepspeed $path/configs/deepspeed_config.json \
     --model_name_or_path ${path} \
     --train_file $path/data/hf_format_data/v1_all_length-512/data_alp_hf.json \
     --preprocessing_num_workers 16 \
