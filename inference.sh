@@ -13,7 +13,7 @@ train_path=$path/run_clm_llms_inference.py
     
 torchrun --nnodes 1 --nproc_per_node 1 \
     ${train_path} \
-    --deepspeed $path/train/deepspeed_config.json \
+    --deepspeed $path/configs/deepspeed_config.json \
     --model_name_or_path ${path} \
     --dataset_name vqa \
     --preprocessing_num_workers 16 \
