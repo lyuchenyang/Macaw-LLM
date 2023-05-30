@@ -60,6 +60,7 @@ import torch
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, TensorDataset
 from torch.utils.data.distributed import DistributedSampler
 from transformers import CLIPProcessor, CLIPModel, CLIPConfig, LlamaConfig, WhisperConfig, WhisperModel, LlamaModel, LlamaTokenizer
+from transformers import AutoConfig, AutoTokenizer, AutoModel
 import torch.distributed as dist
 from torch.nn import CrossEntropyLoss
 
@@ -432,7 +433,7 @@ def main():
     # load model
     clip_config = CLIPConfig.from_pretrained('trained_models/clip_model')
     whisper_config = WhisperConfig.from_pretrained('trained_models/whisper_model')
-    llm_config = LlamaConfig.from_pretrained('trained_models/llama_model')
+    llm_config = AutoConfig.from_pretrained('trained_models/llama_model')
 
     model_config = MM_LLMs_Config(n_frames=6, attention_heads=8, clip_config=clip_config, whisper_config=whisper_config, llm_config=llm_config)
 
@@ -441,7 +442,7 @@ def main():
 
     model.image_encoder.from_pretrained('trained_models/clip-vit-base-patch16')
     model.video_encoder.from_pretrained('trained_models/clip-vit-base-patch16')
-    model.audio_encoder..from_pretrained('trained_models/whisper-base')
+    model.audio_encoder.from_pretrained('trained_models/whisper-base')
     model.llm.from_pretrained('trained_models/llama_model')
 
     # # load the whole model together
@@ -516,10 +517,10 @@ def main():
     # Training
     if training_args.do_train:
         checkpoint = None
-        if training_args.resume_from_checkpoint is not None:
-            checkpoint = training_args.resume_from_checkpoint
-        elif last_checkpoint is not None:
-            checkpoint = last_checkpoint
+        # if training_args.resume_from_checkpoint is not None:
+        #     checkpoint = training_args.resume_from_checkpoint
+        # elif last_checkpoint is not None:
+        #     checkpoint = last_checkpoint
         train_result = trainer.train(resume_from_checkpoint=checkpoint)
 
         trainer.save_model(output_dir=training_args.output_dir)  # Saves the tokenizer too for easy upload
