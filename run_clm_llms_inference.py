@@ -1,3 +1,26 @@
+#!/usr/bin/env python
+# coding=utf-8
+# Copyright 2020 The HuggingFace Inc. team. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""
+Fine-tuning the library models for causal language modeling (GPT, GPT-2, CTRL, ...) on a text file or a dataset.
+
+Here is the full list of checkpoints on the hub that can be fine-tuned by this script:
+https://huggingface.co/models?filter=text-generation
+"""
+# You can also adapt this script on your own causal language modeling task. Pointers for this are left as comments.
+
 import logging
 import math
 import os
@@ -386,9 +409,9 @@ def main():
     # load model
     clip_config = CLIPConfig.from_pretrained('trained_models/clip_model')
     whisper_config = WhisperConfig.from_pretrained('trained_models/whisper_model')
-    llama_config = LlamaConfig.from_pretrained('trained_models/llama_model')
+    llm_config = LlamaConfig.from_pretrained('trained_models/llama_model')
 
-    model_config = MM_LLMs_Config(n_frames=6, attention_heads=8, clip_config=clip_config, whisper_config=whisper_config, llama_config=llama_config)
+    model_config = MM_LLMs_Config(n_frames=6, attention_heads=8, clip_config=clip_config, whisper_config=whisper_config, llm_config=llm_config)
 
     model = MM_LLMs.from_pretrained(
         training_args.output_dir,
