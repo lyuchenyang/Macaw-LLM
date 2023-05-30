@@ -48,6 +48,7 @@ from transformers import (
     is_torch_tpu_available,
     set_seed,
 )
+from transformers import AutoConfig, AutoTokenizer, AutoModel
 from llm_trainer import LLMTrainer, inference_generation, batch_inference_generation
 from transformers.testing_utils import CaptureLogger
 from transformers.trainer_utils import get_last_checkpoint
@@ -409,7 +410,7 @@ def main():
     # load model
     clip_config = CLIPConfig.from_pretrained('trained_models/clip_model')
     whisper_config = WhisperConfig.from_pretrained('trained_models/whisper_model')
-    llm_config = LlamaConfig.from_pretrained('trained_models/llama_model')
+    llm_config = AutoConfig.from_pretrained('trained_models/llama_model')
 
     model_config = MM_LLMs_Config(n_frames=6, attention_heads=8, clip_config=clip_config, whisper_config=whisper_config, llm_config=llm_config)
 
