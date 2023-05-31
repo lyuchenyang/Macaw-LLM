@@ -271,16 +271,6 @@ class DataTrainingArguments:
         if self.streaming:
             require_version("datasets>=2.0.0", "The streaming feature requires `datasets>=2.0.0`")
 
-        if self.dataset_name is None and self.train_file is None and self.validation_file is None:
-            raise ValueError("Need either a dataset name or a training/validation file.")
-        else:
-            if self.train_file is not None:
-                extension = self.train_file.split(".")[-1]
-                assert extension in ["csv", "json", "txt"], "`train_file` should be a csv, a json or a txt file."
-            if self.validation_file is not None:
-                extension = self.validation_file.split(".")[-1]
-                assert extension in ["csv", "json", "txt"], "`validation_file` should be a csv, a json or a txt file."
-
 def draw_samples(lis, ratio):
     samples = ratio if ratio > 1 else int(ratio * len(lis))
 
@@ -293,11 +283,11 @@ def draw_samples(lis, ratio):
 
     return n_lis
 
-def load_datasets(training_args):
+def load_datasets(data_args):
     from datasets.dataset_dict import DatasetDict
     from datasets import Dataset
 
-    data_dir = training_args.train_file
+    data_dir = data_args.train_file
     video_names = ["data/avsd/train_video_names.json", "data/vqa/vqa_video_names.json"]
     all_train_dataset = pickle.load(
         open(data_dir, 'rb'))
@@ -378,7 +368,7 @@ def main():
 
     special_tokens_dict = {'additional_special_tokens': ['<image>', '</image>', '<audio>', '</audio>', '<video>', '</video>', '[PAD]', '<s>', '</s>', '<unk>']}
     # num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
-    model.resize_token_embeddings(len(tokenizer))
+    # model.resize_token_embeddings(len(tokenizer))
 
     if tokenizer.pad_token is None:
         tokenizer.add_special_tokens(dict(pad_token=DEFAULT_PAD_TOKEN))
@@ -493,7 +483,7 @@ def main():
         labels = labels[:, 1:].reshape(-1)
         preds = preds[:, :-1].reshape(-1)
         return metric.compute(predictions=preds, references=labels)
-    train_dataset, visual_names = load_datasets()
+    train_dataset, visual_names = load_datasets(data_args)
 
     if training_args.do_train:
         if data_args.max_train_samples is not None:
