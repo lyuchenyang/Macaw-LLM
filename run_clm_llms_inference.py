@@ -293,11 +293,11 @@ def draw_samples(lis, ratio):
 
     return n_lis
 
-def load_datasets(training_args):
+def load_datasets(data_args):
     from datasets.dataset_dict import DatasetDict
     from datasets import Dataset
 
-    data_dir = training_args.train_file
+    data_dir = data_args.train_file
     video_names = ["data/avsd/train_video_names.json", "data/vqa/vqa_video_names.json"]
     all_train_dataset = pickle.load(
         open(data_dir, 'rb'))
@@ -440,14 +440,14 @@ def main():
         labels = labels[:, 1:].reshape(-1)
         preds = preds[:, :-1].reshape(-1)
         return metric.compute(predictions=preds, references=labels)
-    train_dataset, visual_names = load_datasets(training_args)
+    train_dataset, visual_names = load_datasets(data_args)
 
     # Initialize our Trainer
     trainer = LLMTrainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
-        eval_dataset=eval_dataset,
+        eval_dataset=None,
         tokenizer=tokenizer,
         # Data collator will default to DataCollatorWithPadding, so we change it.
         data_collator=default_data_collator,
