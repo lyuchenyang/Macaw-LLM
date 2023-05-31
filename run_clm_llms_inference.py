@@ -293,14 +293,14 @@ def draw_samples(lis, ratio):
 
     return n_lis
 
-def load_datasets():
+def load_datasets(training_args):
     from datasets.dataset_dict import DatasetDict
     from datasets import Dataset
 
-    data_dirs = ["data/train_total_new.cache"]
+    data_dir = training_args.train_file
     video_names = ["data/avsd/train_video_names.json", "data/vqa/vqa_video_names.json"]
     all_train_dataset = pickle.load(
-        open(data_dirs[0], 'rb'))
+        open(data_dir, 'rb'))
     print(type(all_train_dataset))
     for k in all_train_dataset:
         print(k, all_train_dataset[k][0])
@@ -325,12 +325,10 @@ def load_datasets():
     # all_train_dataset['videos'], all_train_dataset['input_ids'], all_train_dataset['labels'])
 
     eval_offset = 200
-    train_dataset = {'train': Dataset.from_dict({k: all_train_dataset[k] for k in all_train_dataset}),
-    'eval': Dataset.from_dict({k: all_train_dataset[k][:eval_offset] + all_train_dataset[k][60000:60000+eval_offset] + 
-    all_train_dataset[k][120000:120000+eval_offset] for k in all_train_dataset})}
+    train_dataset = {'train': Dataset.from_dict({k: all_train_dataset[k] for k in all_train_dataset})}
 
     train_dataset = DatasetDict(train_dataset)
-    all_train_dataset = (train_dataset['train'], visual_data_names, train_dataset['eval'])
+    all_train_dataset = (train_dataset['train'], visual_data_names)
 
     return all_train_dataset
 
@@ -442,7 +440,7 @@ def main():
         labels = labels[:, 1:].reshape(-1)
         preds = preds[:, :-1].reshape(-1)
         return metric.compute(predictions=preds, references=labels)
-    train_dataset, visual_names, eval_dataset = load_datasets()
+    train_dataset, visual_names = load_datasets(training_args)
 
     # Initialize our Trainer
     trainer = LLMTrainer(
