@@ -30,23 +30,22 @@ PROMPT_DICT = {
 
 
 def preprocess_coco_to_tensor_dataset(all_visual_names):
-    all_examples = json_load('data/generated_examples_coco.json')
+    all_examples = json_load('data/generated_examples_coco.json')['data']
     tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
 
     max_length = 256
-    all_image_names = []
     all_images, all_null_audios, all_null_videos = [], [], []
     all_texts, all_labels = [], []
     random_indices = draw_samples([i for i in range(len(all_examples))], 60000)
     random_indices = {i: i for i in random_indices}
-    index = 0
 
     all_textual_inputs = []
     all_native_labels = []
     for ind, e in enumerate(tqdm(all_examples)):
         if ind not in random_indices:
             continue
-        all_image_names.append(e['image_path'])
+        _image_dir = e['id']
+        all_images.append(all_visual_names[_image_dir])
         e = {
             'instruction': e['instruction'],
             'input': "",
@@ -58,17 +57,7 @@ def preprocess_coco_to_tensor_dataset(all_visual_names):
         all_textual_inputs.append(full_texts)
         t_all = tokenizer.encode(full_texts)
         
-        _image_dir = all_image_names[-1]
-        if len(_image_dir.split('_')[-1].split('.')[0]) < 12:
-            i_str = _image_dir.split('_')[-1].split('.')[0]
-            n_str = '0' * (12 - len(i_str)) + i_str
-            _image_dir = _image_dir.replace(i_str, n_str)
-
-        all_images.append(all_visual_names[_image_dir])
-        index += 1
-        
         t_texts = tokenizer.encode(texts)
-
 
         if len(t_texts) >= max_length:
             continue
@@ -94,8 +83,6 @@ def preprocess_coco_to_tensor_dataset(all_visual_names):
     tokenized_texts['images'] = all_images
     tokenized_texts['audios'] = all_null_audios
     tokenized_texts['videos'] = all_null_videos
-
-    video_names = {'data': all_image_names}
 
     return all_textual_inputs, all_native_labels, all_images, all_null_audios, all_null_videos
 
@@ -185,7 +172,7 @@ def preprocess_avsd_to_tensor_dataset(all_visual_names):
     torch.random.manual_seed(0)
     max_length = 256
     def read_image_and_audio(metadata_dir):
-        metadata = json_load(metadata_dir)
+        metadata = json_load(metadata_dir)['data']
 
         all_videos, all_audios, all_texts, all_null_images = [], [], [], []
         all_labels = []
@@ -233,27 +220,11 @@ def preprocess_avsd_to_tensor_dataset(all_visual_names):
     return all_textual_inputs, all_native_labels, all_images, all_audios, all_videos
 
 
-def resize_images():
-    from PIL import Image
-
-    path = 'data/avsd/videos/frames/'
-    onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
-
-    # onlyfiles = set([f.split('_')[0] for f in onlyfiles])
-
-    for f in tqdm(onlyfiles):
-        ind = int(f.replace('.jpg', '').split('_')[1])
-        image = Image.open(path + f)
-        image.thumbnail((336, 336))
-        image.save(path.replace('frames', 'frames_resize') + f)
-    # print(t)
-
-
 def preprocess_all_datasets():
     all_visual_names = json_load('data/all_visual_names_instruction.json')['dict']
     tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
 
-    all_image_data = preprocess_vqa2_to_tensor_dataset(all_visual_names)
+    all_image_data = preprocess_coco_to_tensor_dataset(all_visual_names)
     all_tetx_data = preprocess_alpaca_to_tensor_dataset()
     all_video_data = preprocess_avsd_to_tensor_dataset(all_visual_names)
 
@@ -311,8 +282,8 @@ def combine_visual_and_audio_names():
 
     all_names = []
 
-    image_examples = json_load('data/generated_examples_coco.json')
-    video_examples = json_load('data/generated_examples_avsd.json')
+    image_examples = json_load('data/generated_examples_coco.json')['data']
+    video_examples = json_load('data/generated_examples_avsd.json')['data']
 
     for e in image_examples:
         all_names.append(e['id'])
@@ -328,3 +299,4 @@ def combine_visual_and_audio_names():
 if __name__ == '__main__':
     combine_visual_and_audio_names()
     preprocess_all_datasets()
+    pass
