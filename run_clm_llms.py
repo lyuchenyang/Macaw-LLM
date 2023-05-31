@@ -373,18 +373,24 @@ def main():
 
     training_args.remove_unused_columns=False
     tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
-    # if tokenizer.pad_token is None:
-    #     tokenizer.add_special_tokens(dict(pad_token=DEFAULT_PAD_TOKEN))
-    # tokenizer.padding_side = "right"
 
-    # # xxx: 2023-03-21, add special tokens
-    # tokenizer.add_special_tokens(
-    #     {
-    #         "eos_token": DEFAULT_EOS_TOKEN,
-    #         "bos_token": DEFAULT_BOS_TOKEN,
-    #         "unk_token": DEFAULT_UNK_TOKEN,
-    #     }
-    # )
+    # Chenyang: 2023-05-21, add special tokens
+
+    special_tokens_dict = {'additional_special_tokens': ['<image>', '</image>', '<audio>', '</audio>', '<video>', '</video>', '[PAD]', '<s>', '</s>', '<unk>']}
+    # num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
+    model.resize_token_embeddings(len(tokenizer))
+
+    if tokenizer.pad_token is None:
+        tokenizer.add_special_tokens(dict(pad_token=DEFAULT_PAD_TOKEN))
+    tokenizer.padding_side = "right"
+
+    tokenizer.add_special_tokens(
+        {
+            "eos_token": DEFAULT_EOS_TOKEN,
+            "bos_token": DEFAULT_BOS_TOKEN,
+            "unk_token": DEFAULT_UNK_TOKEN,
+        }
+    )
 
     # Sending telemetry. Tracking the example usage helps us better allocate resources to maintain them. The
     # information sent is the one passed as arguments along with your Python/PyTorch versions.
