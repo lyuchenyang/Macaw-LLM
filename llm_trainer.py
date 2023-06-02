@@ -369,12 +369,12 @@ class LLMTrainer(Trainer):
                     'input_ids': batch['input_ids'],
                     'attention_mask': batch['attention_mask'],
                     'labels': batch['labels'] if 'labels' in batch else None,
-                    'image_starts': torch.tensor(tokenizer.encode('<image>') * bs, dtype=torch.int),
-                    'image_ends': torch.tensor(tokenizer.encode('</image>') * bs, dtype=torch.int),
-                    'audio_starts': torch.tensor(tokenizer.encode('<audio>') * bs, dtype=torch.int),
-                    'audio_ends': torch.tensor(tokenizer.encode('</audio>') * bs, dtype=torch.int),
-                    'video_starts': torch.tensor(tokenizer.encode('<video>') * bs, dtype=torch.int),
-                    'video_ends': torch.tensor(tokenizer.encode('</video>') * bs, dtype=torch.int),
+                    'image_starts': torch.tensor(self.tokenizer.encode('<image>') * bs, dtype=torch.int),
+                    'image_ends': torch.tensor(self.tokenizer.encode('</image>') * bs, dtype=torch.int),
+                    'audio_starts': torch.tensor(self.tokenizer.encode('<audio>') * bs, dtype=torch.int),
+                    'audio_ends': torch.tensor(self.tokenizer.encode('</audio>') * bs, dtype=torch.int),
+                    'video_starts': torch.tensor(self.tokenizer.encode('<video>') * bs, dtype=torch.int),
+                    'video_ends': torch.tensor(self.tokenizer.encode('</video>') * bs, dtype=torch.int),
                     }
         inputs = {k: inputs[k].to(device) if inputs[k] is not None else inputs[k] for k in inputs}
 
