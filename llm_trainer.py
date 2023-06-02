@@ -369,12 +369,12 @@ class LLMTrainer(Trainer):
                     'input_ids': batch['input_ids'],
                     'attention_mask': batch['attention_mask'],
                     'labels': batch['labels'] if 'labels' in batch else None,
-                    'image_starts': torch.tensor(self.tokenizer.encode('<image>') * bs, dtype=torch.int),
-                    'image_ends': torch.tensor(self.tokenizer.encode('</image>') * bs, dtype=torch.int),
-                    'audio_starts': torch.tensor(self.tokenizer.encode('<audio>') * bs, dtype=torch.int),
-                    'audio_ends': torch.tensor(self.tokenizer.encode('</audio>') * bs, dtype=torch.int),
-                    'video_starts': torch.tensor(self.tokenizer.encode('<video>') * bs, dtype=torch.int),
-                    'video_ends': torch.tensor(self.tokenizer.encode('</video>') * bs, dtype=torch.int),
+                    'image_starts': torch.tensor([self.tokenizer.encconvert_tokens_to_idsode('<image>')] * bs, dtype=torch.int),
+                    'image_ends': torch.tensor([self.tokenizer.convert_tokens_to_ids('</image>')] * bs, dtype=torch.int),
+                    'audio_starts': torch.tensor([self.tokenizer.convert_tokens_to_ids('<audio>')] * bs, dtype=torch.int),
+                    'audio_ends': torch.tensor([self.tokenizer.convert_tokens_to_ids('</audio>')] * bs, dtype=torch.int),
+                    'video_starts': torch.tensor([self.tokenizer.convert_tokens_to_ids('<video>')] * bs, dtype=torch.int),
+                    'video_ends': torch.tensor([self.tokenizer.convert_tokens_to_ids('</video>')] * bs, dtype=torch.int),
                     }
         inputs = {k: inputs[k].to(device) if inputs[k] is not None else inputs[k] for k in inputs}
 
@@ -471,12 +471,12 @@ def inference_generation(model, tokenizer, image_dirs, audio_dirs, video_dirs, i
                     'input_ids': input_ids,
                     # 'attention_mask': torch.tensor([1] * seq_len, dtype=torch.int).reshape(bs, -1).contiguous(),
                     # 'labels': None,
-                    'image_starts': torch.tensor(tokenizer.encode('<image>') * bs, dtype=torch.int),
-                    'image_ends': torch.tensor(tokenizer.encode('</image>') * bs, dtype=torch.int),
-                    'audio_starts': torch.tensor(tokenizer.encode('<audio>') * bs, dtype=torch.int),
-                    'audio_ends': torch.tensor(tokenizer.encode('</audio>') * bs, dtype=torch.int),
-                    'video_starts': torch.tensor(tokenizer.encode('<video>') * bs, dtype=torch.int),
-                    'video_ends': torch.tensor(tokenizer.encode('</video>') * bs, dtype=torch.int),
+                    'image_starts': torch.tensor([tokenizer.convert_tokens_to_ids('<image>')] * bs, dtype=torch.int),
+                    'image_ends': torch.tensor([tokenizer.convert_tokens_to_ids('</image>')] * bs, dtype=torch.int),
+                    'audio_starts': torch.tensor([tokenizer.convert_tokens_to_ids('<audio>')] * bs, dtype=torch.int),
+                    'audio_ends': torch.tensor([tokenizer.convert_tokens_to_ids('</audio>')] * bs, dtype=torch.int),
+                    'video_starts': torch.tensor([tokenizer.convert_tokens_to_ids('<video>')] * bs, dtype=torch.int),
+                    'video_ends': torch.tensor([tokenizer.convert_tokens_to_ids('</video>')] * bs, dtype=torch.int),
                     }
             inputs = {k: inputs[k].to(device) for k in inputs}
 
@@ -560,12 +560,12 @@ def batch_inference_generation(args, model, tokenizer, image_dirs, audio_dirs, v
                       'audios': batch_all_audio_mels.half(),
                       'images': batch_all_images.half(),
                       'input_ids': batch_input_ids,
-                      'image_starts': torch.tensor(tokenizer.encode('<image>') * bs, dtype=torch.int),
-                      'image_ends': torch.tensor(tokenizer.encode('</image>') * bs, dtype=torch.int),
-                      'audio_starts': torch.tensor(tokenizer.encode('<audio>') * bs, dtype=torch.int),
-                      'audio_ends': torch.tensor(tokenizer.encode('</audio>') * bs, dtype=torch.int),
-                      'video_starts': torch.tensor(tokenizer.encode('<video>') * bs, dtype=torch.int),
-                      'video_ends': torch.tensor(tokenizer.encode('</video>') * bs, dtype=torch.int),
+                      'image_starts': torch.tensor([tokenizer.convert_tokens_to_ids('<image>')] * bs, dtype=torch.int),
+                      'image_ends': torch.tensor([tokenizer.convert_tokens_to_ids('</image>')] * bs, dtype=torch.int),
+                      'audio_starts': torch.tensor([tokenizer.convert_tokens_to_ids('<audio>')] * bs, dtype=torch.int),
+                      'audio_ends': torch.tensor([tokenizer.convert_tokens_to_ids('</audio>')] * bs, dtype=torch.int),
+                      'video_starts': torch.tensor([tokenizer.convert_tokens_to_ids('<video>')] * bs, dtype=torch.int),
+                      'video_ends': torch.tensor([tokenizer.convert_tokens_to_ids('</video>')] * bs, dtype=torch.int),
                       }
             inputs = {k: inputs[k].to(device) for k in inputs}
 
