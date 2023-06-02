@@ -10,10 +10,19 @@ from os.path import isfile, join
 import torch
 import numpy as np
 import random
+import clip
+import torch
+from transformers import AutoFeatureExtractor, AutoModel, LlamaForCausalLM
 
 json_load = lambda x: json.load(codecs.open(x, 'r', encoding='utf-8'))
 json_dump = lambda d, p: json.dump(d, codecs.open(p, 'w', 'utf-8'), indent=2, ensure_ascii=False)
+
+# xxx: 2023-03-21
+IGNORE_INDEX = -100
 DEFAULT_PAD_TOKEN = "[PAD]"
+DEFAULT_EOS_TOKEN = "</s>"
+DEFAULT_BOS_TOKEN = "<s>"
+DEFAULT_UNK_TOKEN = "<unk>"
 
 PROMPT_DICT = {
     "prompt_input": (
@@ -29,23 +38,19 @@ PROMPT_DICT = {
 }
 
 
-def preprocess_coco_to_tensor_dataset(all_visual_names):
-    all_examples = json_load('data/generated_examples_coco.json')['data']
-    tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
+def preprocess_coco_to_tensor_dataset(all_visual_names, tokenizer):
+    all_examples = json_load('data/generated_examples_coco_1.json')['data']
 
     max_length = 256
     all_images, all_null_audios, all_null_videos = [], [], []
     all_texts, all_labels = [], []
-    random_indices = draw_samples([i for i in range(len(all_examples))], 60000)
-    random_indices = {i: i for i in random_indices}
 
     all_textual_inputs = []
     all_native_labels = []
     for ind, e in enumerate(tqdm(all_examples)):
-        if ind not in random_indices:
+        if 'caption' in e['instruction'] or 'caption' in e['response'] or ' no ' in e['response'] or 'not' in e['response']:
             continue
-        _image_dir = e['id']
-        all_images.append(all_visual_names[_image_dir])
+        all_images.append(all_visual_names[e['id']])
         e = {
             'instruction': e['instruction'],
             'input': "",
@@ -64,14 +69,14 @@ def preprocess_coco_to_tensor_dataset(all_visual_names):
         if len(t_all) > max_length:
             t_all = t_all[:max_length]
         if len(t_all) < max_length:
-            t_all = t_all + [32006] * (max_length - len(t_all))
+            t_all = t_all + [tokenizer.pad_token_id] * (max_length - len(t_all))
 
         prefix_len = len(t_texts) - 1
-        labels = [-100] * prefix_len + t_all[prefix_len:]
+        labels = [IGNORE_INDEX] * prefix_len + t_all[prefix_len:]
         if len(labels) > max_length:
             labels = labels[:max_length]
         if len(labels) < max_length:
-            labels = labels + [-100] * (max_length - len(labels))
+            labels = labels + [IGNORE_INDEX] * (max_length - len(labels))
         all_texts.append(torch.tensor([t_all], dtype=torch.int))
         all_labels.append(torch.tensor([labels], dtype=torch.int))
         all_native_labels.append(labels)
@@ -87,10 +92,8 @@ def preprocess_coco_to_tensor_dataset(all_visual_names):
     return all_textual_inputs, all_native_labels, all_images, all_null_audios, all_null_videos
 
 
-def preprocess_alpaca_to_tensor_dataset():
+def preprocess_alpaca_to_tensor_dataset(tokenizer):
     all_examples = json_load('data/alpaca_data/alpaca_data.json')
-
-    tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
 
     max_length = 256
     all_null_images, all_null_audios, all_null_videos = [], [], []
@@ -110,15 +113,15 @@ def preprocess_alpaca_to_tensor_dataset():
         if len(t_all) > max_length:
             t_all = t_all[:max_length]
         if len(t_all) < max_length:
-            t_all = t_all + [32006] * (max_length - len(t_all))
+            t_all = t_all + [tokenizer.pad_token_id] * (max_length - len(t_all))
         all_textual_inputs.append(full_texts)
 
         prefix_len = len(t_texts) - 1
-        labels = [-100] * prefix_len + t_all[prefix_len:]        
+        labels = [IGNORE_INDEX] * prefix_len + t_all[prefix_len:]        
         if len(labels) > max_length:
             labels = labels[:max_length]
         if len(labels) < max_length:
-            labels = labels + [-100] * (max_length - len(labels))    
+            labels = labels + [IGNORE_INDEX] * (max_length - len(labels))    
         
         all_texts.append(t_all)
         all_labels.append(labels)
@@ -150,22 +153,8 @@ def draw_samples(lis, ratio):
     return n_lis
 
 
-# xxx: 2023-03-21
-IGNORE_INDEX = -100
-DEFAULT_PAD_TOKEN = "[PAD]"
-DEFAULT_EOS_TOKEN = "</s>"
-DEFAULT_BOS_TOKEN = "<s>"
-DEFAULT_UNK_TOKEN = "<unk>"
-
-
-def preprocess_avsd_to_tensor_dataset(all_visual_names):
-    import clip
-    import torch
-    from transformers import AutoTokenizer, AutoFeatureExtractor, AutoModel, LlamaForCausalLM
-
-    tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
-
-    train_metadata_dir = 'data/generated_examples_avsd.json'
+def preprocess_avsd_to_tensor_dataset(all_visual_names, tokenizer):
+    train_metadata_dir = 'data/generated_examples_avsd_1.json'
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -180,24 +169,26 @@ def preprocess_avsd_to_tensor_dataset(all_visual_names):
         all_textual_inputs = []
         all_native_labels = []
         for ind, e in enumerate(tqdm(metadata)):
+            if 'caption' in e['instruction'] or 'caption' in e['response'] or ' no ' in e['response'] or 'not' in e['response']:
+                continue
 
             prompt = "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{}\n\n### Response:\n {} \n\n"
             q = prompt.format(e['instruction'], e['response'])
-            t_all = tokenizer.encode(q, max_length=max_length)
+            t_all = tokenizer.encode(q, max_length=max_length, truncation=True)
 
             q_input = q.split(' Response:')[0] + ' Response:'
 
             if len(t_all) > max_length:
                 t_all = t_all[:max_length]
-            else:
-                t_all = t_all + [32006] * (max_length - len(t_all))
+            if len(t_all) < max_length:
+                t_all = t_all + [tokenizer.pad_token_id] * (max_length - len(t_all))
 
             len_t_q = len(tokenizer.encode(q_input)) - 1
-            labels = [-100] * len_t_q + t_all[len_t_q:]
+            labels = [IGNORE_INDEX] * len_t_q + t_all[len_t_q:]
             if len(labels) > max_length:
                 labels = labels[:max_length]
             if len(labels) < max_length:
-                labels = labels + [-100] * (max_length - len(labels))
+                labels = labels + [IGNORE_INDEX] * (max_length - len(labels))
             all_textual_inputs.append(q)
             all_native_labels.append(labels)
 
@@ -222,11 +213,29 @@ def preprocess_avsd_to_tensor_dataset(all_visual_names):
 
 def preprocess_all_datasets():
     all_visual_names = json_load('data/all_visual_names_instruction.json')['dict']
-    tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
+    tokenizer = AutoTokenizer.from_pretrained('trained_models/llama_tokenizer')
 
-    all_image_data = preprocess_coco_to_tensor_dataset(all_visual_names)
-    all_tetx_data = preprocess_alpaca_to_tensor_dataset()
-    all_video_data = preprocess_avsd_to_tensor_dataset(all_visual_names)
+    # Chenyang: 2023-05-21, add special tokens
+
+    special_tokens_dict = {'additional_special_tokens': ['<image>', '</image>', '<audio>', '</audio>', '<video>', '</video>']}
+
+    if tokenizer.pad_token is None:
+        tokenizer.add_special_tokens(dict(pad_token=DEFAULT_PAD_TOKEN))
+    tokenizer.padding_side = "right"
+
+    tokenizer.add_special_tokens(
+        {
+            "eos_token": DEFAULT_EOS_TOKEN,
+            "bos_token": DEFAULT_BOS_TOKEN,
+            "unk_token": DEFAULT_UNK_TOKEN,
+        }
+    )
+
+    tokenizer.save_pretrained('trained_models/llama_tokenizer')
+
+    all_image_data = preprocess_coco_to_tensor_dataset(all_visual_names, tokenizer)
+    all_tetx_data = preprocess_alpaca_to_tensor_dataset(tokenizer)
+    all_video_data = preprocess_avsd_to_tensor_dataset(all_visual_names, tokenizer)
 
     def draw_examples(lis, num):
         ri = draw_samples([i for i in range(len(lis))], num)
@@ -275,7 +284,7 @@ def preprocess_all_datasets():
 
     # import ipdb
     # ipdb.set_trace()
-    pickle.dump(tokenized_texts, open('data/train_total_new_instruction.cache', "wb"), protocol=4)
+    pickle.dump(tokenized_texts, open('data/train_total_new_instruction_1.cache', "wb"), protocol=4)
 
 
 def combine_visual_and_audio_names():
