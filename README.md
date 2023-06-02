@@ -15,7 +15,7 @@
 
 **_¹ [Chenyang Lyu](https://lyuchenyang.github.io), ² Bingshuai Liu, ³ [Minghao Wu](https://minghao-wu.github.io/), ⁴ [Zefeng Du](https://seeledu.github.io/index-en.html),_**
 
-**_⁵ [Xinting Huang](https://timhuang1.github.io/), ⁵ [Zhaopeng Tu](http://www.zptu.net//), ⁵ [Shuming Shi](https://shumingshi.github.io/), ⁵ [Longyue Wang](http://www.longyuewang.com/)_**
+**_⁵ [Xinting Huang](https://timhuang1.github.io/), ⁵ [Zhaopeng Tu](http://www.zptu.net/), ⁵ [Shuming Shi](https://shumingshi.github.io/), ⁵ [Longyue Wang](http://www.longyuewang.com/)_**
 
 
 <!-- **Affiliations:** -->
@@ -147,7 +147,7 @@ We welcome contributions from the community to improve and expand Macaw-LLM's ca
 
 ```bibtex
 @misc{Macaw-LLM,
-  author = {Chenyang Lyu and Bingshuai Liu and Minghao Wu and Zefeng Du and Longyue Wang},
+  author = {Chenyang Lyu and Bingshuai Liu and Minghao Wu and Zefeng Du and Xinting Huang and Zhaopeng Tu and Shuming Shi and Longyue Wang},
   title = {Macaw-LLM: Multi-Modal Language Modeling with Image, Video, Audio, and Text Integration},
   year = {2023},
   publisher = {GitHub},
