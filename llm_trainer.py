@@ -541,7 +541,7 @@ def inference_generation(model, tokenizer, image_dirs, audio_dirs, video_dirs, i
         for image_dir, video_dir, audio_dir, instruction in zip(image_dirs, video_dirs, audio_dirs, instructions):
             _all_video_frames = []
             for vfi in train_frame_ind:
-                if image_dir == 'None':
+                if video_dir == 'None':
                     _all_video_frames.append(torch.zeros(1, 3, 224, 224))
                     continue
                 frame = preprocess(
@@ -608,7 +608,7 @@ def inference_generation(model, tokenizer, image_dirs, audio_dirs, video_dirs, i
 
             print(input_text)
             print('========================================')
-            print(generated_text)
+            print(generated_text.lstrip())
 
 
 def batch_inference_generation(args, model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions, responses, batch_size, dataset):
@@ -631,7 +631,7 @@ def batch_inference_generation(args, model, tokenizer, image_dirs, audio_dirs, v
             for image_dir, video_dir, audio_dir, instruction in zip(batch_image_dirs, batch_video_dirs, batch_audio_dirs, batch_instructions):
                 _all_video_frames = []
                 for vfi in train_frame_ind:
-                    if image_dir == 'None':
+                    if video_dir == 'None':
                         _all_video_frames.append(torch.zeros(1, 3, 224, 224))
                         continue
                     frame = preprocess(
