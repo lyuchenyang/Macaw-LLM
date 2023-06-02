@@ -161,7 +161,7 @@ image_dir = 'data/avsd/frames/'
 audio_dir = 'data/avsd/audios/'
 
 
-visual_name_dir = "data/all_visual_names.json"
+visual_name_dir = "data/all_visual_names_instruction.json"
 vname = json_load(visual_name_dir)['list']
 train_video_names = {'data': vname}
 
@@ -275,22 +275,6 @@ class LLMTrainer(Trainer):
                 else:
                     loss = None
                     with self.compute_loss_context_manager():
-                        from transformers import LlamaTokenizer
-                        tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
-
-                        image_dirs = ['None', 'None', 'None']
-                        video_dirs = ['None', 'data/avsd/frames/7UPGT', 'data/avsd/frames/3MSZA']
-                        audio_dirs = ['None', 'data/avsd/audios/7UPGT', 'data/avsd/audios/3MSZA']
-
-                        prompt = "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{}\n\n### Response:"
-                        instructions = [prompt.format('Give three tips for staying healthy.'), 
-                        prompt.format('Does the woman eat or drink anything?'),
-                        prompt.format('What\'s on the table next to her?')]
-
-                        inference_generation(model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions)
-                        
-                        exit()
-
                         inputs = self.get_self_inputs(inputs)
                         # forward pass
                         outputs = model(**inputs)
@@ -368,11 +352,11 @@ class LLMTrainer(Trainer):
                 all_images.append(torch.zeros(1, 3, 224, 224))
                 continue
             _image_dir = train_video_names['data'][vid]
-            if len(_image_dir.split('_')[-1].split('.')[0]) < 12:
-                i_str = _image_dir.split('_')[-1].split('.')[0]
-                n_str = '0' * (12 - len(i_str)) + i_str
-                _image_dir = _image_dir.replace(i_str, n_str)
-            frame = preprocess(Image.open(_image_dir))
+            # if len(_image_dir.split('_')[-1].split('.')[0]) < 12:
+            #     i_str = _image_dir.split('_')[-1].split('.')[0]
+            #     n_str = '0' * (12 - len(i_str)) + i_str
+            #     _image_dir = _image_dir.replace(i_str, n_str)
+            frame = preprocess(Image.open('data/coco/train2014/{}'.format(_image_dir)))
             all_images.append(frame.unsqueeze(0))
         
         all_images = torch.cat(all_images, dim=0)
@@ -590,7 +574,7 @@ def inference_generation(model, tokenizer, image_dirs, audio_dirs, video_dirs, i
             
             eos_token_id = tokenizer.eos_token_id
             if eos_token_id in input_ids:
-                encoded_text.remove(eos_token_id)
+                input_ids.remove(eos_token_id)
 
             input_ids = torch.tensor([input_ids], dtype=torch.int).to(device)
 
