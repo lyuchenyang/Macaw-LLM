@@ -7,7 +7,7 @@ import torch
 import torch.nn.functional as F
 from torch import Tensor
 from torch import nn
-
+from transformers import GenerationConfig
 from collections import OrderedDict
 from typing import Tuple, Union
 from typing import List, Optional, Tuple, Union
@@ -932,8 +932,10 @@ class MM_LLMs(PreTrainedModel):
 
         if 'inference' in inputs and inputs['inference'] is True:
             # generate_ids = self.llm.generate(input_ids=inputs['input_ids'], inputs_embeds=text_embeddings, max_new_tokens=128)
-            generate_ids = self.llm.generate(inputs_embeds=text_embeddings, max_new_tokens=128)
+            # generate_ids = self.llm.generate(inputs_embeds=text_embeddings, max_new_tokens=128)
 
+            # The code below will possibly trigger an error in : https://github.com/microsoft/DeepSpeed/issues/3156 (the solution only partially resolves the bug for me)
+            generate_ids = self.llm.generate(inputs_embeds=text_embeddings, max_new_tokens=128, eos_token_id=2, bos_token_id=1, pad_token_id=32006)
             return generate_ids
         outputs = self.llm(inputs_embeds=text_embeddings, attention_mask=attention_mask, labels=labels)
 
