@@ -369,7 +369,7 @@ class LLMTrainer(Trainer):
                     'input_ids': batch['input_ids'],
                     'attention_mask': batch['attention_mask'],
                     'labels': batch['labels'] if 'labels' in batch else None,
-                    'image_starts': torch.tensor([self.tokenizer.encconvert_tokens_to_idsode('<image>')] * bs, dtype=torch.int),
+                    'image_starts': torch.tensor([self.tokenizer.convert_tokens_to_ids('<image>')] * bs, dtype=torch.int),
                     'image_ends': torch.tensor([self.tokenizer.convert_tokens_to_ids('</image>')] * bs, dtype=torch.int),
                     'audio_starts': torch.tensor([self.tokenizer.convert_tokens_to_ids('<audio>')] * bs, dtype=torch.int),
                     'audio_ends': torch.tensor([self.tokenizer.convert_tokens_to_ids('</audio>')] * bs, dtype=torch.int),
