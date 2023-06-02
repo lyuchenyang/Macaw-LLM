@@ -10,10 +10,19 @@ from os.path import isfile, join
 import torch
 import numpy as np
 import random
+import clip
+import torch
+from transformers import AutoFeatureExtractor, AutoModel, LlamaForCausalLM
 
 json_load = lambda x: json.load(codecs.open(x, 'r', encoding='utf-8'))
 json_dump = lambda d, p: json.dump(d, codecs.open(p, 'w', 'utf-8'), indent=2, ensure_ascii=False)
+
+# xxx: 2023-03-21
+IGNORE_INDEX = -100
 DEFAULT_PAD_TOKEN = "[PAD]"
+DEFAULT_EOS_TOKEN = "</s>"
+DEFAULT_BOS_TOKEN = "<s>"
+DEFAULT_UNK_TOKEN = "<unk>"
 
 PROMPT_DICT = {
     "prompt_input": (
@@ -84,23 +93,15 @@ def preprocess_avsd_to_val_dataset():
     json_dump(all_val_examples, 'data/avsd/avsd_val_inference.json')
 
 
-def preprocess_vqa2_to_tensor_dataset(all_visual_names):
+def preprocess_vqa2_to_tensor_dataset(all_visual_names, tokenizer):
     all_examples = json_load('data/vqa/mscoco_train2014_annotations_added_path.json')['annotations']
     all_questions = json_load('data/vqa/OpenEnded_mscoco_train2014_questions.json')
     all_questions = {e['question_id']: [e['image_id'], e['question']] for e in all_questions['questions']}
-    tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
-
-    # if tokenizer.pad_token is None:
-    #     tokenizer.add_special_tokens(dict(pad_token=DEFAULT_PAD_TOKEN))
-    # tokenizer.padding_side = "right"
-
-    # tokenizer.save_pretrained('trained_models/llama_tokenizer')
 
     max_length = 256
     all_image_names = []
     all_images, all_null_audios, all_null_videos = [], [], []
     all_texts, all_labels = [], []
-    offset = 7985
     random_indices = draw_samples([i for i in range(len(all_examples))], 60000)
     random_indices = {i: i for i in random_indices}
     index = 0
@@ -138,14 +139,14 @@ def preprocess_vqa2_to_tensor_dataset(all_visual_names):
         if len(t_all) > max_length:
             t_all = t_all[:max_length]
         if len(t_all) < max_length:
-            t_all = t_all + [32006] * (max_length - len(t_all))
+            t_all = t_all + [tokenizer.pad_token_id] * (max_length - len(t_all))
 
         prefix_len = len(t_texts) - 1
-        labels = [-100] * prefix_len + t_all[prefix_len:]
+        labels = [IGNORE_INDEX] * prefix_len + t_all[prefix_len:]
         if len(labels) > max_length:
             labels = labels[:max_length]
         if len(labels) < max_length:
-            labels = labels + [-100] * (max_length - len(labels))
+            labels = labels + [IGNORE_INDEX] * (max_length - len(labels))
         all_texts.append(torch.tensor([t_all], dtype=torch.int))
         all_labels.append(torch.tensor([labels], dtype=torch.int))
         all_native_labels.append(labels)
@@ -167,10 +168,8 @@ def preprocess_vqa2_to_tensor_dataset(all_visual_names):
     return all_textual_inputs, all_native_labels, all_images, all_null_audios, all_null_videos
 
 
-def preprocess_alpaca_to_tensor_dataset():
+def preprocess_alpaca_to_tensor_dataset(tokenizer):
     all_examples = json_load('data/alpaca_data/alpaca_data.json')
-
-    tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
 
     max_length = 256
     all_null_images, all_null_audios, all_null_videos = [], [], []
@@ -190,15 +189,15 @@ def preprocess_alpaca_to_tensor_dataset():
         if len(t_all) > max_length:
             t_all = t_all[:max_length]
         if len(t_all) < max_length:
-            t_all = t_all + [32006] * (max_length - len(t_all))
+            t_all = t_all + [tokenizer.pad_token_id] * (max_length - len(t_all))
         all_textual_inputs.append(full_texts)
 
         prefix_len = len(t_texts) - 1
-        labels = [-100] * prefix_len + t_all[prefix_len:]        
+        labels = [IGNORE_INDEX] * prefix_len + t_all[prefix_len:]        
         if len(labels) > max_length:
             labels = labels[:max_length]
         if len(labels) < max_length:
-            labels = labels + [-100] * (max_length - len(labels))    
+            labels = labels + [IGNORE_INDEX] * (max_length - len(labels))    
         
         all_texts.append(t_all)
         all_labels.append(labels)
@@ -207,7 +206,6 @@ def preprocess_alpaca_to_tensor_dataset():
     all_null_images = [-1] * len(all_texts)
     all_null_audios = all_null_images
     all_null_videos = all_null_images 
-    # pickle.dump([all_null_images, all_null_audios, all_null_videos, all_texts, all_labels], open('data/alpaca/alpaca.cache', "wb"), protocol=4)
 
     tokenized_texts = tokenizer(all_textual_inputs, max_length=max_length, padding='max_length', truncation=True)
     tokenized_texts['labels'] = all_native_labels
@@ -215,9 +213,8 @@ def preprocess_alpaca_to_tensor_dataset():
     tokenized_texts['audios'] = all_null_audios
     tokenized_texts['videos'] = all_null_videos
 
-    # pickle.dump(tokenized_texts, open('data/alpaca/alpaca_new.cache', "wb"), protocol=4)
-
     return all_textual_inputs, all_native_labels, all_null_images, all_null_audios, all_null_videos
+
 
 def draw_samples(lis, ratio):
     samples = ratio if ratio > 1 else int(ratio * len(lis))
@@ -230,48 +227,69 @@ def draw_samples(lis, ratio):
     n_lis = [lis[i] for i in new_lis]
 
     return n_lis
-  
-
-# xxx: 2023-03-21
-IGNORE_INDEX = -100
-DEFAULT_PAD_TOKEN = "[PAD]"
-DEFAULT_EOS_TOKEN = "</s>"
-DEFAULT_BOS_TOKEN = "<s>"
-DEFAULT_UNK_TOKEN = "<unk>"
 
 
-def preprocess_avsd_to_tensor_dataset(all_visual_names):
-    import clip
-    import torch
-    from transformers import AutoTokenizer, AutoFeatureExtractor, AutoModel, LlamaForCausalLM
+def extract_audio_from_video():
+    import moviepy.editor as mp
 
-    tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
-    # model = LlamaForCausalLM.from_pretrained('trained_models/llama_model')
+    path = './data/avsd/videos/'
+    onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
 
-    # special_tokens_dict = {'additional_special_tokens': ['<image>', '</image>', '<audio>', '</audio>', '<video>', '</video>', '[PAD]', '<s>', '</s>', '<unk>']}
-    # # num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
-    # model.resize_token_embeddings(len(tokenizer))
+    for f in tqdm(onlyfiles):
+        dir = path + f
+        clip = mp.VideoFileClip(dir)
+        clip.audio.write_audiofile('./data/avsd/audios/{}.wav'.format(f))
+    return
 
-    # if tokenizer.pad_token is None:
-    #     tokenizer.add_special_tokens(dict(pad_token=DEFAULT_PAD_TOKEN))
-    # tokenizer.padding_side = "right"
 
-    # # xxx: 2023-03-21, add special tokens
-    # tokenizer.add_special_tokens(
-    #     {
-    #         "eos_token": DEFAULT_EOS_TOKEN,
-    #         "bos_token": DEFAULT_BOS_TOKEN,
-    #         "unk_token": DEFAULT_UNK_TOKEN,
-    #     }
-    # )
+def sample_frames_from_video():
+    # Importing all necessary libraries
+    import cv2
 
-    # special_token_ids = tokenizer.convert_tokens_to_ids(special_tokens_dict['additional_special_tokens'])
-    # print(special_token_ids)
-    
-    # tokenizer.save_pretrained('trained_models/llama_tokenizer')
-    # model.save_pretrained('trained_models/llama_model')
-    # exit()
+    path = 'data/avsd/videos/'
+    onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
 
+    frames_per_video = 120
+    for f in tqdm(onlyfiles):
+        # Read the video from specified path
+        cam = cv2.VideoCapture(path + f)
+
+        # frame
+        currentframe = 0
+        all_frames = []
+        while (True):
+
+            # reading from frame
+            ret, frame = cam.read()
+
+            if ret:
+                all_frames.append(frame)
+                currentframe += 1
+            else:
+                break
+        lens = len(all_frames)
+        if lens >= frames_per_video:
+            interval = lens // frames_per_video
+
+            frame_ind = [i * interval for i in range(frames_per_video)]
+            for i in range(len(frame_ind)):
+                if frame_ind[i] >= lens:
+                    frame_ind[i] = lens - 1
+            frame_ind[-1] = lens - 1
+            sampled_frames = [all_frames[i] for i in frame_ind]
+        else:
+            sampled_frames = sorted(draw_samples([i for i in range(len(all_frames))], frames_per_video))
+            sampled_frames = [all_frames[i] for i in sampled_frames]
+
+        for ind, frame in enumerate(sampled_frames):
+            cv2.imwrite('./data/avsd/frames/{}_{}.jpg'.format(f, str(ind)), frame)
+
+        # Release all space and windows once done
+        cam.release()
+        cv2.destroyAllWindows()
+
+
+def preprocess_avsd_to_tensor_dataset(all_visual_names, tokenizer):
     image_dir = 'data/avsd/frames/'
     audio_dir = 'data/avsd/audios/'
 
@@ -309,14 +327,14 @@ def preprocess_avsd_to_tensor_dataset(all_visual_names):
                 if len(t_all) > max_length:
                     t_all = t_all[:max_length]
                 else:
-                    t_all = t_all + [32006] * (max_length - len(t_all))
+                    t_all = t_all + [tokenizer.pad_token_id] * (max_length - len(t_all))
 
                 len_t_q = len(tokenizer.encode(q_input)) - 1
-                labels = [-100] * len_t_q + t_all[len_t_q:]
+                labels = [IGNORE_INDEX] * len_t_q + t_all[len_t_q:]
                 if len(labels) > max_length:
                     labels = labels[:max_length]
                 if len(labels) < max_length:
-                    labels = labels + [-100] * (max_length - len(labels))
+                    labels = labels + [IGNORE_INDEX] * (max_length - len(labels))
                 all_textual_inputs.append(q)
                 all_native_labels.append(labels)
 
@@ -326,25 +344,17 @@ def preprocess_avsd_to_tensor_dataset(all_visual_names):
                 all_texts.append(torch.tensor([t_all], dtype=torch.int))
                 all_labels.append(torch.tensor([labels], dtype=torch.int))
 
-        # pickle.dump(
-        #     [all_null_images, all_audios, all_videos, all_texts, all_labels],
-        #     open('./data/avsd/{}.cache'.format(split), "wb"), protocol=4)
-
         video_names = {'split': split, 'data': all_video_names}
-        # json_dump(video_names, './data/avsd/{}_video_names.json'.format(split))
 
         tokenized_texts = tokenizer(all_textual_inputs, max_length=max_length, padding='max_length', truncation=True)
         tokenized_texts['labels'] = all_native_labels
         tokenized_texts['images'] = all_null_images
         tokenized_texts['audios'] = all_audios
         tokenized_texts['videos'] = all_videos
-
-        # pickle.dump(tokenized_texts, open('data/avsd/train_new.cache', "wb"), protocol=4)
         
         return all_textual_inputs, all_native_labels, all_null_images, all_audios, all_videos
 
     all_textual_inputs, all_native_labels, all_images, all_audios, all_videos = read_image_and_audio(train_metadata_dir, split='train')
-    # read_image_and_audio(val_metadata_dir, split='val')
 
     return all_textual_inputs, all_native_labels, all_images, all_audios, all_videos
 
@@ -367,11 +377,29 @@ def resize_images():
 
 def preprocess_all_datasets():
     all_visual_names = json_load('data/all_visual_names.json')['dict']
-    tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
+    tokenizer = AutoTokenizer.from_pretrained('trained_models/llama_tokenizer')
 
-    all_image_data = preprocess_vqa2_to_tensor_dataset(all_visual_names)
-    all_tetx_data = preprocess_alpaca_to_tensor_dataset()
-    all_video_data = preprocess_avsd_to_tensor_dataset(all_visual_names)
+    # Chenyang: 2023-05-21, add special tokens
+
+    special_tokens_dict = {'additional_special_tokens': ['<image>', '</image>', '<audio>', '</audio>', '<video>', '</video>']}
+
+    if tokenizer.pad_token is None:
+        tokenizer.add_special_tokens(dict(pad_token=DEFAULT_PAD_TOKEN))
+    tokenizer.padding_side = "right"
+
+    tokenizer.add_special_tokens(
+        {
+            "eos_token": DEFAULT_EOS_TOKEN,
+            "bos_token": DEFAULT_BOS_TOKEN,
+            "unk_token": DEFAULT_UNK_TOKEN,
+        }
+    )
+
+    tokenizer.save_pretrained('trained_models/llama_tokenizer')
+
+    all_image_data = preprocess_vqa2_to_tensor_dataset(all_visual_names, tokenizer)
+    all_tetx_data = preprocess_alpaca_to_tensor_dataset(tokenizer)
+    all_video_data = preprocess_avsd_to_tensor_dataset(all_visual_names, tokenizer)
 
     def draw_examples(lis, num):
         ri = draw_samples([i for i in range(len(lis))], num)
