@@ -39,7 +39,7 @@ PROMPT_DICT = {
 
 
 def preprocess_coco_to_tensor_dataset(all_visual_names, tokenizer):
-    all_examples = json_load('data/generated_examples_coco_1.json')['data']
+    all_examples = json_load('data/generated_examples_coco.json')['data']
 
     max_length = 256
     all_images, all_null_audios, all_null_videos = [], [], []
@@ -154,7 +154,7 @@ def draw_samples(lis, ratio):
 
 
 def preprocess_avsd_to_tensor_dataset(all_visual_names, tokenizer):
-    train_metadata_dir = 'data/generated_examples_avsd_1.json'
+    train_metadata_dir = 'data/generated_examples_avsd.json'
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
