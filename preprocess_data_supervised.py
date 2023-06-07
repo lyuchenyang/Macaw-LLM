@@ -38,7 +38,7 @@ PROMPT_DICT = {
 }
 
 def preprocess_vqa2_to_val_dataset():
-    all_examples = json_load('data/vqa/mscoco_val2014_annotations_added_path.json')['annotations']
+    all_examples = json_load('data/vqa/mscoco_val2014_annotations.json')['annotations']
     all_questions = json_load('data/vqa/OpenEnded_mscoco_val2014_questions.json')
     all_questions = {e['question_id']: [e['image_id'], e['question']] for e in all_questions['questions']}
 
@@ -94,7 +94,7 @@ def preprocess_avsd_to_val_dataset():
 
 
 def preprocess_vqa2_to_tensor_dataset(all_visual_names, tokenizer):
-    all_examples = json_load('data/vqa/mscoco_train2014_annotations_added_path.json')['annotations']
+    all_examples = json_load('data/vqa/mscoco_train2014_annotations.json')['annotations']
     all_questions = json_load('data/vqa/OpenEnded_mscoco_train2014_questions.json')
     all_questions = {e['question_id']: [e['image_id'], e['question']] for e in all_questions['questions']}
 
@@ -467,8 +467,8 @@ def combine_visual_and_audio_names():
                 _image_dir = _image_dir.replace(i_str, n_str)
 
             all_image_names.append(_image_dir)
-    add_image_names('data/vqa/mscoco_train2014_annotations_added_path.json')
-    add_image_names('data/vqa/mscoco_val2014_annotations_added_path.json')
+    add_image_names('data/vqa/mscoco_train2014_annotations.json')
+    add_image_names('data/vqa/mscoco_val2014_annotations.json')
 
     all_video_names = []
 
