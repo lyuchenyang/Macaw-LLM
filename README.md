@@ -99,7 +99,7 @@ cd ..
 
 1. **Downloading dataset:** 
    - Text data: [stanford_alpaca/alpaca_data.json](https://github.com/tatsu-lab/stanford_alpaca/blob/main/alpaca_data.json) 
-   - Image data: [COCO Dataset](https://cocodataset.org/#home) 
+   - Image data: [COCO Dataset](https://cocodataset.org/#home) [VQA Dataset](https://visualqa.org/download.html)
    - Video data: [Charades](https://allenai.org/plato/charades/) and [Video Dialog](https://video-dialog.com/) 
 
 2. **Dataset preprocessing:** 
