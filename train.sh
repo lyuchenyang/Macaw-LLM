@@ -15,7 +15,7 @@ torchrun --nnodes 1 --nproc_per_node 8 \
     ${train_path} \
     --deepspeed $path/configs/deepspeed_config.json \
     --model_name_or_path ${path} \
-    --train_file $path/data/hf_format_data/v1_all_length-512/data_alp_hf.json \
+    --train_file $path/data/train_total_new_name.cache \
     --preprocessing_num_workers 16 \
     --per_device_train_batch_size 4 \
     --per_device_eval_batch_size 8 \
