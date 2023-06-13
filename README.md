@@ -142,6 +142,18 @@ We welcome contributions from the community to improve and expand Macaw-LLM's ca
 
 - [ ] **Multilingual Support:** Our next step is to support multiple languages, moving towards true multi-modal and multilingual language models. We believe this will significantly broaden Macaw-LLM's applicability and enhance its understanding of diverse, global contexts.
 
+## Acknowledgements 🙏
+
+We would like to express our gratitude to the following open-source projects for their valuable contributions to Macaw-LLM:
+
+- [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca/) for providing the Alpaca dataset, which we used in our experiments.
+- [Wenxiang Jiao's Parrot](https://github.com/wxjiao/parrot) for providing a helpful implementation of the training of LLaMA.
+- [CLIP](https://github.com/openai/CLIP) for providing a strong image and video encoding model.
+- [Whisper](https://github.com/s3prl/s3prl) for providing a strong audio encoding model.
+- [LLaMA](https://github.com/salesforce/llama) for providing a powerful LLM.
+
+We would also like to thank the developers and maintainers of these projects for their dedication and hard work in making their projects open-source and accessible to the community.
+
 
 ## Citation
 
