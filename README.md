@@ -147,7 +147,7 @@ We welcome contributions from the community to improve and expand Macaw-LLM's ca
 We would like to express our gratitude to the following open-source projects for their valuable contributions to Macaw-LLM:
 
 - [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca/) for providing the Alpaca dataset, which we used in our experiments.
-- [Wenxiang Jiao's Parrot](https://github.com/wxjiao/parrot) for providing a helpful implementation of the training of LLaMA.
+- [Parrot](https://github.com/wxjiao/parrot) for providing a helpful implementation of the training of LLaMA.
 - [CLIP](https://github.com/openai/CLIP) for providing a strong image and video encoding model.
 - [Whisper](https://github.com/s3prl/s3prl) for providing a strong audio encoding model.
 - [LLaMA](https://github.com/salesforce/llama) for providing a powerful LLM.
