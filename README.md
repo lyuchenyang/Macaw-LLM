@@ -188,12 +188,9 @@ We would also like to thank the developers and maintainers of these projects for
 ## Citation
 
 ```bibtex
-@misc{Macaw-LLM,
-  author = {Chenyang Lyu and Bingshuai Liu and Minghao Wu and Zefeng Du and Xinting Huang and Zhaopeng Tu and Shuming Shi and Longyue Wang},
-  title = {Macaw-LLM: Multi-Modal Language Modeling with Image, Video, Audio, and Text Integration},
-  year = {2023},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/lyuchenyang/Macaw-LLM}},
+@article{Macaw-LLM,
+  title={Macaw-LLM: Multi-Modal Language Modeling with Image, Audio, Video, and Text Integration},
+  author={Lyu, Chenyang and Wu, Minghao and Wang, Longyue and Huang, Xinting and Liu, Bingshuai and Du, Zefeng and Shi, Shuming and Tu, Zhaopeng},
+  year={2023},
 }
 ```
