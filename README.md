@@ -152,7 +152,7 @@ We present several examples that highlight the proficiency of our Macaw-LLM in u
 These examples showcase our system's multi-modal ability to understand and generate responses based on images and videos. These examples demonstrate how our system comprehends visual content and produces high-quality, fluent responses in natural language conversations. Our system generates contextually relevant and informative answers to various questions about the image, demonstrating its capability to communicate about visual content naturally and fluently.
 
 <div align="center">
-  <img src="assets/examples-all.png" alt="Figure Description or Alt Text" width="80%">
+  <img src="assets/examples-all.png" alt="Figure Description or Alt Text" width="96%">
 </div>
 
 ## Future Work and Contributions 🚀
