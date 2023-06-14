@@ -417,9 +417,10 @@ class LLMTrainer(Trainer):
         return model
 
 
-def inference_generation(model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions):
+def inference_generation(args, model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions, responses, dataset):
     with torch.no_grad():
-        for image_dir, video_dir, audio_dir, instruction in zip(image_dirs, video_dirs, audio_dirs, instructions):
+        all_eval_outs = []
+        for image_dir, video_dir, audio_dir, instruction, true_response in tqdm(zip(image_dirs, video_dirs, audio_dirs, instructions, responses)):
             _all_video_frames = []
             for vfi in train_frame_ind:
                 if video_dir == 'None':
@@ -434,7 +435,7 @@ def inference_generation(model, tokenizer, image_dirs, audio_dirs, video_dirs, i
                 all_audio_mels = torch.zeros(1, 80, 3000)
             else:
                 # load audio and pad/trim it to fit 30 seconds
-                audio = whisper.load_audio("{}.mp4.wav".format(audio_dir))
+                audio = whisper.load_audio(audio_dir)
 
                 # audio = whisper.load_audio("data/avsd/videos/audios/{}.wav".format(vn))
                 audio = whisper.pad_or_trim(audio)
@@ -459,9 +460,6 @@ def inference_generation(model, tokenizer, image_dirs, audio_dirs, video_dirs, i
 
             input_ids = torch.tensor([input_ids], dtype=torch.int).to(device)
 
-            # import ipdb
-            # ipdb.set_trace()
-
             bs = all_video_frames.size(0)
             seq_len = input_ids.size(1)
 
@@ -481,7 +479,10 @@ def inference_generation(model, tokenizer, image_dirs, audio_dirs, video_dirs, i
             inputs = {k: inputs[k].to(device) for k in inputs}
 
             inputs['inference'] = True
-            generate_ids = model(inputs)
+            try:
+                generate_ids = model(inputs)
+            except Exception as e:
+                continue
 
             input_text = tokenizer.batch_decode(input_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
 
@@ -491,6 +492,17 @@ def inference_generation(model, tokenizer, image_dirs, audio_dirs, video_dirs, i
             print('========================================')
             print(generated_text.lstrip())
 
+            e = {
+                'image_dir': image_dir,
+                'video_dir': video_dir,
+                'audio_dir': audio_dir, 
+                'instruction': instruction,
+                'input': input_text,
+                'output': generated_text.strip(),
+                'true_response': true_response
+            }
+            all_eval_outs.append(e)
+        json_dump(all_eval_outs, 'eval_outputs/{}_eval_outputs_1by1.json'.format(dataset))
 
 def batch_inference_generation(args, model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions, responses, batch_size, dataset):
     all_eval_outs = []
@@ -568,20 +580,28 @@ def batch_inference_generation(args, model, tokenizer, image_dirs, audio_dirs, v
                       'video_ends': torch.tensor([tokenizer.convert_tokens_to_ids('</video>')] * bs, dtype=torch.int),
                       }
             inputs = {k: inputs[k].to(device) for k in inputs}
-
             inputs['inference'] = True
-            generate_ids = model(inputs)
+
+            try:
+                generate_ids = model(inputs)
+            except Exception as ee:
+                continue
 
             input_texts = tokenizer.batch_decode(batch_input_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
             generated_texts = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
 
-            for input_text, generated_text, true_response in zip(input_texts, generated_texts, batch_responses):
+            for image_dir, video_dir, audio_dir, instruction, input_text, generated_text, true_response in zip(batch_image_dirs, batch_video_dirs, batch_audio_dirs, batch_instructions, input_texts, generated_texts, batch_responses):
                 e = {
+                    'image_dir': image_dir,
+                    'video_dir': video_dir,
+                    'audio_dir': audio_dir, 
+                    'instruction': instruction,
                     'input': input_text,
-                    'output': generated_text,
+                    'output': generated_text.strip(),
                     'true_response': true_response
                 }
                 all_eval_outs.append(e)
 
-    if args.local_rank == 0 or args.local_rank == -1:
-        json_dump(all_eval_outs, 'data/{}_eval_outputs.json'.format(dataset))
+            if args.local_rank == 0 or args.local_rank == -1:
+                post_fix = args.output_dir.split("mm_llms_trainer_")[-1].replace('/', '_')
+                json_dump(all_eval_outs, 'eval_outputs/{}_eval_outputs_{}.json'.format(dataset, post_fix))
