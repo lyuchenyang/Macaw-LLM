@@ -3,14 +3,8 @@
 </div>
 
 
-# Macaw-LLM: Multi-Modal Language Modeling with Image, Audio, Video, and Text Integration
-<div align="center">
-  <img src="/assets/2-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; 
-  <img src="/assets/1-watermark.png" alt="Logo" width="70"> &nbsp; &nbsp; &nbsp; &nbsp; 
-  <img src="/assets/0-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; 
-  <img src="/assets/3-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; 
-  <img src="/assets/4-watermark.png" alt="Logo" width="50">
-</div>
+# Macaw-LLM: Multi-Modal Language Modeling with Image, Audio, Video, and Text Integration <div align="center"> <img src="/assets/2-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/1-watermark.png" alt="Logo" width="70"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/0-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/3-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/4-watermark.png" alt="Logo" width="50"> </div>
+
 
 <div align="center">
 <img src="https://img.shields.io/badge/Version-1.0.0-blue.svg" alt="Version"> 
@@ -152,7 +146,7 @@ cd ..
      ./inference.sh
      ```
 
-## Examples 🌐💬
+## Examples <img src="/assets/0-watermark.png" alt="Logo" width="40">
 We present several examples that highlight the proficiency of our Macaw-LLM in understanding and following multi-modal instructions.
 Two examples showcase our system's multi-modal ability to understand and generate responses based on an image. These examples demonstrate how our system comprehends visual content and produces high-quality, fluent responses in natural language conversations. Our system generates contextually relevant and informative answers to various questions about the image, demonstrating its capability to communicate about visual content naturally and fluently.
 
