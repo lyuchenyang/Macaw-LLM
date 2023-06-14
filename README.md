@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/lyuchenyang/Macaw-LLM/main/assets/logo-text.png" alt="Logo" width="200">
 </div>
 
-# Macaw-LLM: Multi-Modal Language Modeling with Image, Video, Audio, and Text Integration 🌐🖼️📹🎵📝
+# Macaw-LLM: Multi-Modal Language Modeling with Image, Audio, Video, and Text Integration
 <div align="center">
 <img src="https://img.shields.io/badge/Version-1.0.0-blue.svg" alt="Version">
 <img src="https://img.shields.io/badge/License-CC%20BY%204.0-green.svg" alt="License">
@@ -13,7 +13,7 @@
   
 <!-- **Authors:** -->
 
-**_¹ ² [Chenyang Lyu](https://lyuchenyang.github.io), ³ [Minghao Wu](https://minghao-wu.github.io/), ¹ <sup>*</sup>[Longyue Wang](http://www.longyuewang.com/), ¹ [Xinting Huang](https://timhuang1.github.io/),_**
+**_¹ ² [Chenyang Lyu](https://lyuchenyang.github.io), ³ [Minghao Wu](https://minghao-wu.github.io/), ¹ <sup>*</sup> [Longyue Wang](http://www.longyuewang.com/), ¹ [Xinting Huang](https://timhuang1.github.io/),_**
 
 **_¹ Bingshuai Liu, ¹ [Zefeng Du](https://seeledu.github.io/index-en.html), ¹ [Shuming Shi](https://shumingshi.github.io/), ¹ [Zhaopeng Tu](http://www.zptu.net/)_**
 
@@ -21,10 +21,11 @@
 <!-- **Affiliations:** -->
 
 _¹ Tencent AI Lab, ² Dublin City University, ³ Monash University_
+_<sup>*</sup>Longyue Wang is the corresponding author: \texttt}[{vinnlywang@tencent.com](mailto:{vinnlywang@tencent.com)_
 </div>
 
 
-Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling by seamlessly combining image, video, audio, and text data, built upon the foundations of CLIP, Whisper, and LLaMA.
+Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling by seamlessly combining image🖼️, video📹, audio🎵, and text📝 data, built upon the foundations of CLIP, Whisper, and LLaMA.
 
 ## Table of Contents 📚
 
