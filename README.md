@@ -72,6 +72,15 @@ Our novel alignment strategy enables faster adaptation by efficiently bridging m
 2. Feeding the encoded features into an attention function, wherein the multi-modal features serve as the query and the embedding matrix of LLaMA as the key and value.
 3. Injecting the outputs into the input sequence (before instruction tokens) of LLaMA, allowing for a streamlined alignment process with minimal additional parameters.
 
+## New Multi-modal Instruction Dataset
+<div align="center">
+  <img src="assets/dataset.png" alt="Figure Description or Alt Text" width="70%">
+</div>
+In this project, we generate a dataset using GPT-3.5-Turbo by providing image or video captions as prompts. To create this dataset, we use captions from the MS COCO dataset for images and the Charades and AVSD datasets for videos. Our dataset consists of approximately 69K examples based on COCO image captions and 50K examples based on Charades and AVSD video captions. We currently focus on single-turn dialogues but plan to expand into multi-turn dialogues and diverse multi-modal content in the future. This will enrich the dataset and improve fine-tuning for language learning models (LLMs).
+<div align="center">
+  <img src="assets/dataset_table.png" alt="Figure Description or Alt Text" width="60%">
+</div>
+
 ## Installation 💻
 
 To install Macaw-LLM, follow these steps:
@@ -101,7 +110,9 @@ cd ..
 1. **Downloading dataset:** 
    - Text data: [stanford_alpaca/alpaca_data.json](https://github.com/tatsu-lab/stanford_alpaca/blob/main/alpaca_data.json) 
    - Image data: [COCO Dataset](https://cocodataset.org/#home) [VQA Dataset](https://visualqa.org/download.html)
-   - Video data: [Charades](https://allenai.org/plato/charades/) and [Video Dialog](https://video-dialog.com/) 
+   - Video data: [Charades](https://allenai.org/plato/charades/) and [Video Dialog](https://video-dialog.com/)
+   - Image instruction data: [Macaw-LLM image instruction dataset](https://github.com/lyuchenyang/Macaw-LLM/blob/main/data/generated_examples_coco.json)
+   - Video instruction data: [Macaw-LLM video instruction dataset](https://github.com/lyuchenyang/Macaw-LLM/blob/main/data/generated_examples_avsd.json)
 
 2. **Dataset preprocessing:** 
    - Place the data in three modalities to specific folders - `data/text/`, `data/image/`, `data/video/`
@@ -138,7 +149,8 @@ While our model is still in its early stages, we believe that Macaw-LLM paves th
 We welcome contributions from the community to improve and expand Macaw-LLM's capabilities. 🤝
 
 ## ToDo 👨‍💻
-
+- [ ] **Evaluation:** We show some examples showcasing the multi-modal ability of our \ours. However, we acknowledge that these efforts may not be fully adequate for accurately and comprehensively demonstrate model capabilities. We aim to conduct extensive evaluation on our systems to evaluate its capability.
+    
 - [ ] **More Language Models:** We aim to extend Macaw-LLM by incorporating additional language models like Dolly, BLOOM, T-5, etc. This will enable more robust and versatile processing and understanding of multi-modal data.
 
 - [ ] **Multilingual Support:** Our next step is to support multiple languages, moving towards true multi-modal and multilingual language models. We believe this will significantly broaden Macaw-LLM's applicability and enhance its understanding of diverse, global contexts.
