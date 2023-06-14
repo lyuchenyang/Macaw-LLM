@@ -51,6 +51,7 @@ Macaw-LLM boasts the following unique features:
 
 1. **Simple & Fast Alignment**: Macaw-LLM enables seamless integration of multi-modal data through simple and fast alignment to LLM embeddings. This efficient process ensures quick adaptation of diverse data types.
 2. **One-Stage Instruction Fine-Tuning**: Our model streamlines the adaptation process through one-stage instruction fine-tuning, promoting a more efficient learning experience.
+3. **New Multi-modal Instruction Dataset**: We create a new multi-modal instruction dataset that covers diverse instructional tasks leveraging image and video modalities, which facilitates future work on multi-modal LLMs.
 
 
 ## Architecture 🔧
