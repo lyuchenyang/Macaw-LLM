@@ -33,6 +33,7 @@ import datasets
 import evaluate
 import torch
 from datasets import load_dataset
+from transformers import GenerationConfig
 
 import transformers
 from transformers import (
@@ -48,7 +49,7 @@ from transformers import (
     is_torch_tpu_available,
     set_seed,
 )
-from transformers import AutoConfig, AutoTokenizer, AutoModel
+from transformers import AutoModel
 from llm_trainer import LLMTrainer, inference_generation, batch_inference_generation
 from transformers.testing_utils import CaptureLogger
 from transformers.trainer_utils import get_last_checkpoint
@@ -271,15 +272,6 @@ class DataTrainingArguments:
         if self.streaming:
             require_version("datasets>=2.0.0", "The streaming feature requires `datasets>=2.0.0`")
 
-        if self.dataset_name is None and self.train_file is None and self.validation_file is None:
-            raise ValueError("Need either a dataset name or a training/validation file.")
-        else:
-            if self.train_file is not None:
-                extension = self.train_file.split(".")[-1]
-                assert extension in ["csv", "json", "txt"], "`train_file` should be a csv, a json or a txt file."
-            if self.validation_file is not None:
-                extension = self.validation_file.split(".")[-1]
-                assert extension in ["csv", "json", "txt"], "`validation_file` should be a csv, a json or a txt file."
 
 def draw_samples(lis, ratio):
     samples = ratio if ratio > 1 else int(ratio * len(lis))
@@ -349,19 +341,7 @@ def main():
     # print(training_args)
 
     training_args.remove_unused_columns=False
-    tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
-    # if tokenizer.pad_token is None:
-    #     tokenizer.add_special_tokens(dict(pad_token=DEFAULT_PAD_TOKEN))
-    # tokenizer.padding_side = "right"
-
-    # # xxx: 2023-03-21, add special tokens
-    # tokenizer.add_special_tokens(
-    #     {
-    #         "eos_token": DEFAULT_EOS_TOKEN,
-    #         "bos_token": DEFAULT_BOS_TOKEN,
-    #         "unk_token": DEFAULT_UNK_TOKEN,
-    #     }
-    # )
+    tokenizer = AutoTokenizer.from_pretrained('trained_models/llama_tokenizer')
 
     # Sending telemetry. Tracking the example usage helps us better allocate resources to maintain them. The
     # information sent is the one passed as arguments along with your Python/PyTorch versions.
@@ -419,7 +399,6 @@ def main():
         # torch_dtype=torch.float16,
         # device_map=device_map,
     )
-
     # if training_args.local_rank == 0:
     #     print(model)
     #     for name, param in model.named_parameters():
@@ -447,7 +426,7 @@ def main():
         model=model,
         args=training_args,
         train_dataset=train_dataset,
-        eval_dataset=None,
+        eval_dataset=train_dataset,
         tokenizer=tokenizer,
         # Data collator will default to DataCollatorWithPadding, so we change it.
         data_collator=default_data_collator,
@@ -459,37 +438,21 @@ def main():
     if training_args.do_eval:
         prompt = "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{}\n\n### Response:"
 
-        # metrics = trainer.evaluate()
-        tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
+        tokenizer = AutoTokenizer.from_pretrained('trained_models/llama_tokenizer')
         model = trainer.get_model()
-        image_dirs = ['None', 'None', 'None', 'None', 'None']
-        video_dirs = ['None', 'None', 'None', 'data/avsd/frames/7UPGT', 'data/avsd/frames/3MSZA']
-        audio_dirs = ['None', 'None', 'None', 'data/avsd/audios/7UPGT', 'data/avsd/audios/3MSZA']
+        dataset_name = data_args.dataset_name
+        val_dir = 'data/{}/{}_val_inference.json'.format(dataset_name, dataset_name)
+        all_val_examples = json_load(val_dir)['data']
 
-        instructions = [prompt.format('Give three tips for staying healthy.'), 
-        prompt.format('Tell me who is the president of USA?'), 
-        prompt.format('Which season is hotter, winter or summer?'), 
-        prompt.format('Does the woman eat or drink anything?'),
-        prompt.format('What\'s on the table next to her?')]
-
-        inference_generation(model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions)
-
-        # exit()
-        # batch_size = 24
-        # # dataset_name = 'avsd'
-        # dataset_name = data_args.dataset_name
-        # val_dir = 'data/{}/{}_val_inference.json'.format(dataset_name, dataset_name)
-        # all_val_examples = json_load(val_dir)
-
-        # image_dirs = [e['image'] for e in all_val_examples]
-        # video_dirs = [e['video'] for e in all_val_examples]
-        # audio_dirs = [e['audio'] for e in all_val_examples]
-        # instructions = [prompt.format(e['instruction']) for e in all_val_examples]
-        # responses = [e['response'] for e in all_val_examples]
-
+        all_val_examples = all_val_examples[:100]
+        image_dirs = [e['image'] for e in all_val_examples]
+        video_dirs = [e['video'] for e in all_val_examples]
+        audio_dirs = [e['audio'] for e in all_val_examples]
+        instructions = [prompt.format(e['instruction']) for e in all_val_examples]
+        responses = [e['response'] for e in all_val_examples]
+        print(len(all_val_examples))
         # batch_inference_generation(training_args, model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions, responses, batch_size, dataset_name)
-
-
+        inference_generation(training_args, model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions, responses, dataset_name)
 
 def _mp_fn(index):
     # For xla_spawn (TPUs)
