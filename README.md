@@ -143,6 +143,17 @@ cd ..
      ./inference.sh
      ```
 
+## Examples 🌐💬
+We present several examples that highlight the proficiency of our \ours in understanding and following multi-modal instructions.
+Two examples showcase our system's multi-modal ability to understand and generate responses based on an image. These examples demonstrate how our system comprehends visual content and produces high-quality, fluent responses in natural language conversations. Our system generates contextually relevant and informative answers to various questions about the image, demonstrating its capability to communicate about visual content naturally and fluently.
+
+<div align="center">
+  <img src="assets/example-1.png" alt="Figure Description or Alt Text" width="50%">
+</div>
+
+<div align="center">
+  <img src="assets/example-2.png" alt="Figure Description or Alt Text" width="50%">
+</div>
 
 ## Future Work and Contributions 🚀
 
