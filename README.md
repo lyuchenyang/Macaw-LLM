@@ -13,14 +13,14 @@
   
 <!-- **Authors:** -->
 
-**_¹ [Chenyang Lyu](https://lyuchenyang.github.io), ³ [Minghao Wu](https://minghao-wu.github.io/), ⁵ [Longyue Wang](http://www.longyuewang.com/), [Xinting Huang](https://timhuang1.github.io/),_**
+**_¹ ² [Chenyang Lyu](https://lyuchenyang.github.io), ³ [Minghao Wu](https://minghao-wu.github.io/), ¹ <sup>*</sup>[Longyue Wang](http://www.longyuewang.com/), ¹ [Xinting Huang](https://timhuang1.github.io/),_**
 
-**_⁵ ² Bingshuai Liu, ⁴ [Zefeng Du](https://seeledu.github.io/index-en.html), ⁵ [Shuming Shi](https://shumingshi.github.io/), ⁵ [Zhaopeng Tu](http://www.zptu.net/)_**
+**_¹ Bingshuai Liu, ¹ [Zefeng Du](https://seeledu.github.io/index-en.html), ¹ [Shuming Shi](https://shumingshi.github.io/), ¹ [Zhaopeng Tu](http://www.zptu.net/)_**
 
 
 <!-- **Affiliations:** -->
 
-_¹ Dublin City University, ² Xiamen University, ³ Monash University, ⁴ University of Macau, ⁵ Tencent AI Lab_
+_¹ Tencent AI Lab, ² Dublin City University, ³ Monash University_
 </div>
 
 
