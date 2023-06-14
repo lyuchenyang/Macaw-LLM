@@ -74,7 +74,7 @@ Our novel alignment strategy enables faster adaptation by efficiently bridging m
 2. Feeding the encoded features into an attention function, wherein the multi-modal features serve as the query and the embedding matrix of LLaMA as the key and value.
 3. Injecting the outputs into the input sequence (before instruction tokens) of LLaMA, allowing for a streamlined alignment process with minimal additional parameters.
 
-## New Multi-modal Instruction Dataset
+## New Multi-modal Instruction Dataset 🆕
 <div align="center">
   <img src="assets/dataset.png" alt="Figure Description or Alt Text" width="70%">
 </div>
