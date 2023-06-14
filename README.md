@@ -75,7 +75,7 @@ Macaw-LLM is composed of three main components:
 
 The integration of these models allows Macaw-LLM to process and analyze multi-modal data effectively.
 
-## Alignment Strategy 📏
+## Alignment Strategy <img src="/assets/3-watermark.png" alt="Logo" width="40">
 
 Our novel alignment strategy enables faster adaptation by efficiently bridging multi-modal features to textual features. The process involves:
 
@@ -92,7 +92,7 @@ In this project, we generate a dataset using GPT-3.5-Turbo by providing image or
   <img src="assets/dataset_table.png" alt="Figure Description or Alt Text" width="60%">
 </div>
 
-## Installation 💻
+## Installation <img src="/assets/1-watermark.png" alt="Logo" width="60">
 
 To install Macaw-LLM, follow these steps:
 
