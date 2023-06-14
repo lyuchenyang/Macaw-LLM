@@ -1,6 +1,10 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/lyuchenyang/Macaw-LLM/main/assets/logo-text.png" alt="Logo" width="200">
 </div>
+<div align="center">
+  <img src="/assets/0-watermark.png" alt="Logo" width="20">
+  <img src="/assets/1-watermark.png" alt="Logo" width="20">
+</div>
 
 # Macaw-LLM: Multi-Modal Language Modeling with Image, Audio, Video, and Text Integration
 <div align="center">
