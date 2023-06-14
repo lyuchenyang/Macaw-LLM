@@ -47,7 +47,7 @@ Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling
 - [Usage](#usage)
 - [Future Work and Contributions](#future-work-and-contributions)
 
-## Introduction <img src="/assets/2-watermark.png" alt="Logo" width="50">
+## Introduction <img src="/assets/4-watermark.png" alt="Logo" width="40">
 <div align="center">
   <img src="assets/alignment.png" alt="Figure Description or Alt Text" width="70%">
 </div>
@@ -65,7 +65,7 @@ Macaw-LLM boasts the following unique features:
 3. **New Multi-modal Instruction Dataset**: We create a new multi-modal instruction dataset that covers diverse instructional tasks leveraging image and video modalities, which facilitates future work on multi-modal LLMs.
 
 
-## Architecture 🔧
+## Architecture <img src="/assets/2-watermark.png" alt="Logo" width="40">
 
 Macaw-LLM is composed of three main components:
 
