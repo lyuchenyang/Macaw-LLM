@@ -2,16 +2,16 @@
   <img src="https://raw.githubusercontent.com/lyuchenyang/Macaw-LLM/main/assets/logo-text.png" alt="Logo" width="200">
 </div>
 <div align="center">
-  <img src="/assets/0-watermark.png" alt="Logo" width="50">
-  <img src="/assets/1-watermark.png" alt="Logo" width="50">
-  <img src="/assets/2-watermark.png" alt="Logo" width="50">
-  <img src="/assets/3-watermark.png" alt="Logo" width="50">
+  <img src="/assets/2-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; 
+  <img src="/assets/1-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; 
+  <img src="/assets/0-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; 
+  <img src="/assets/3-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; 
   <img src="/assets/4-watermark.png" alt="Logo" width="50">
 </div>
 
 # Macaw-LLM: Multi-Modal Language Modeling with Image, Audio, Video, and Text Integration
 <div align="center">
-<img src="https://img.shields.io/badge/Version-1.0.0-blue.svg" alt="Version">
+<img src="https://img.shields.io/badge/Version-1.0.0-blue.svg" alt="Version"> 
 <img src="https://img.shields.io/badge/License-CC%20BY%204.0-green.svg" alt="License">
 <img src="https://img.shields.io/github/stars/lyuchenyang/Macaw-LLM?color=yellow" alt="Stars">
 <img src="https://img.shields.io/github/issues/lyuchenyang/Macaw-LLM?color=red" alt="Issues">
