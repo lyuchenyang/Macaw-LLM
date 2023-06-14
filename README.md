@@ -66,7 +66,7 @@ Macaw-LLM is composed of three main components:
 
 1. **CLIP**: Responsible for encoding images and video frames.
 2. **Whisper**: Responsible for encoding audio data.
-3. **LLM**(LLaMA/Vicuna/Bloom): The language model that encodes instructions and generates responses.
+3. **LLM** (LLaMA/Vicuna/Bloom): The language model that encodes instructions and generates responses.
 
 The integration of these models allows Macaw-LLM to process and analyze multi-modal data effectively.
 
