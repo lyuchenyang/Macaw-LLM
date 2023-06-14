@@ -15,13 +15,14 @@
 
 **_¹ ² [Chenyang Lyu](https://lyuchenyang.github.io), ³ [Minghao Wu](https://minghao-wu.github.io/), ¹ <sup>*</sup> [Longyue Wang](http://www.longyuewang.com/), ¹ [Xinting Huang](https://timhuang1.github.io/),_**
 
-**_¹ Bingshuai Liu, ¹ [Zefeng Du](https://seeledu.github.io/index-en.html), ¹ [Shuming Shi](https://shumingshi.github.io/), ¹ [Zhaopeng Tu](http://www.zptu.net/)_**
+**_¹ [Bingshuai Liu](bsliu.github.io), ¹ [Zefeng Du](https://seeledu.github.io/index-en.html), ¹ [Shuming Shi](https://shumingshi.github.io/), ¹ [Zhaopeng Tu](http://www.zptu.net/)_**
 
 
 <!-- **Affiliations:** -->
 
 _¹ Tencent AI Lab, ² Dublin City University, ³ Monash University_
-_<sup>*</sup>Longyue Wang is the corresponding author: \texttt}[{vinnlywang@tencent.com](mailto:{vinnlywang@tencent.com)_
+
+_<sup>*</sup>Longyue Wang is the corresponding author: [vinnlywang@tencent.com](mailto:{vinnlywang@tencent.com)_
 </div>
 
 
