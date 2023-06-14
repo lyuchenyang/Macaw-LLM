@@ -2,8 +2,9 @@
   <img src="https://raw.githubusercontent.com/lyuchenyang/Macaw-LLM/main/assets/logo-text.png" alt="Logo" width="200">
 </div>
 
+<div align="center"> <img src="/assets/2-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/1-watermark.png" alt="Logo" width="70"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/0-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/3-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/4-watermark.png" alt="Logo" width="50"> </div>
 
-# Macaw-LLM: Multi-Modal Language Modeling with Image, Audio, Video, and Text Integration <div align="center"> <img src="/assets/2-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/1-watermark.png" alt="Logo" width="70"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/0-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/3-watermark.png" alt="Logo" width="50"> &nbsp; &nbsp; &nbsp; &nbsp; <img src="/assets/4-watermark.png" alt="Logo" width="50"> </div>
+# Macaw-LLM: Multi-Modal Language Modeling with Image, Audio, Video, and Text Integration
 
 
 <div align="center">
