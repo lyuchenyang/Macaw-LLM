@@ -144,7 +144,7 @@ cd ..
      ```
 
 ## Examples 🌐💬
-We present several examples that highlight the proficiency of our \ours in understanding and following multi-modal instructions.
+We present several examples that highlight the proficiency of our Macaw-LLM in understanding and following multi-modal instructions.
 Two examples showcase our system's multi-modal ability to understand and generate responses based on an image. These examples demonstrate how our system comprehends visual content and produces high-quality, fluent responses in natural language conversations. Our system generates contextually relevant and informative answers to various questions about the image, demonstrating its capability to communicate about visual content naturally and fluently.
 
 <div align="center">
