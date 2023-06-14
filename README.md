@@ -47,7 +47,7 @@ Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling
 - [Usage](#usage)
 - [Future Work and Contributions](#future-work-and-contributions)
 
-## Introduction 📖
+## Introduction <img src="/assets/2-watermark.png" alt="Logo" width="50">
 <div align="center">
   <img src="assets/alignment.png" alt="Figure Description or Alt Text" width="70%">
 </div>
