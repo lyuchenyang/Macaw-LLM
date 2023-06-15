@@ -32,8 +32,8 @@ _<sup>*</sup>Longyue Wang is the corresponding author: [vinnlywang@tencent.com](
 
 Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling by seamlessly combining image🖼️, video📹, audio🎵, and text📝 data, built upon the foundations of CLIP, Whisper, and LLaMA.
 
-### 📰 <a href="https://tinyurl.com/4rsexudv" style="color: black; text-decoration: underline;text-decoration-style: dotted;">Paper</a>     :package: <a href="https://tinyurl.com/yem9m4nf" style="color: black; text-decoration: underline;text-decoration-style: dotted;">Model (via dropbox)</a>    :package: <a href="https://share.weiyun.com/27EFG2pq" style="color: black; text-decoration: underline;text-decoration-style: dotted;">Model (via weiyun)</a>    :card_file_box: <a href="/data" style="color: black; text-decoration: underline;text-decoration-style: dotted;">Dataset</a>
-
+#### 📰 <a href="https://tinyurl.com/4rsexudv" style="color: black; text-decoration: underline;text-decoration-style: dotted;">Paper</a>     :package: <a href="https://tinyurl.com/yem9m4nf" style="color: black; text-decoration: underline;text-decoration-style: dotted;">Model (via dropbox)</a>    :package: <a href="https://share.weiyun.com/27EFG2pq" style="color: black; text-decoration: underline;text-decoration-style: dotted;">Model (via weiyun)</a>    :card_file_box: <a href="/data" style="color: black; text-decoration: underline;text-decoration-style: dotted;">Dataset</a>
+    :bricks: [Code](#usage)    
 
 ## Table of Contents 📚
 
@@ -47,7 +47,7 @@ Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling
 
 ## Introduction <img src="/assets/4-watermark.png" alt="Logo" width="40">
 <div align="center">
-  <img src="assets/alignment.png" alt="Figure Description or Alt Text" width="70%">
+  <img src="assets/alignment.png" alt="Figure Description or Alt Text" width="80%">
 </div>
 
 <!-- ![Figure Description or Alt Text](alignment.png) -->
@@ -83,11 +83,11 @@ Our novel alignment strategy enables faster adaptation by efficiently bridging m
 
 ## New Multi-modal Instruction Dataset 🆕
 <div align="center">
-  <img src="assets/dataset.png" alt="Figure Description or Alt Text" width="70%">
+  <img src="assets/dataset.png" alt="Figure Description or Alt Text" width="80%">
 </div>
 In this project, we generate a dataset using GPT-3.5-Turbo by providing image or video captions as prompts. To create this dataset, we use captions from the MS COCO dataset for images and the Charades and AVSD datasets for videos. Our dataset consists of approximately 69K examples based on COCO image captions and 50K examples based on Charades and AVSD video captions. We currently focus on single-turn dialogues but plan to expand into multi-turn dialogues and diverse multi-modal content in the future. This will enrich the dataset and improve fine-tuning for language learning models (LLMs).
 <div align="center">
-  <img src="assets/dataset_table.png" alt="Figure Description or Alt Text" width="60%">
+  <img src="assets/dataset_table.png" alt="Figure Description or Alt Text" width="70%">
 </div>
 
 ## Installation <img src="/assets/1-watermark.png" alt="Logo" width="60">
