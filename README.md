@@ -47,7 +47,7 @@ Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling
     .btn:hover {
       background-color: darkblue;
     }
-  </style>
+</style>
 < a href=" " class="btn">Test</ a>
 
 ## Table of Contents 📚
