@@ -32,14 +32,12 @@ _<sup>*</sup>Longyue Wang is the corresponding author: [vinnlywang@tencent.com](
 
 Macaw-LLM is an exploratory endeavor that pioneers multi-modal language modeling by seamlessly combining image🖼️, video📹, audio🎵, and text📝 data, built upon the foundations of CLIP, Whisper, and LLaMA.
 
-[<kbd> <br> KeyBinding Button <br> </kbd>][KBD]
+[![Paper]][PaperLink]
 
-[![Button Shield]][Shield]
-
-[Button Shield]: https://img.shields.io/badge/Shield_Buttons-37a779?style=for-the-badge
+[Paper]: https://img.shields.io/badge/Shield_Buttons-37a779?style=for-the-badge
 
 [License]: LICENSE
-[Shield]: Types/Shield.md
+[PaperLink]: https://tinyurl.com/4rsexudv
 [KBD]: Types/KBD.md
 [#]: #
 
