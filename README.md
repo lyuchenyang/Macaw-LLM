@@ -164,7 +164,7 @@ While our model is still in its early stages, we believe that Macaw-LLM paves th
 We welcome contributions from the community to improve and expand Macaw-LLM's capabilities. 🤝
 
 ## ToDo 👨‍💻
-- [ ] **Evaluation:** We show some examples showcasing the multi-modal ability of our \ours. However, we acknowledge that these efforts may not be fully adequate for accurately and comprehensively demonstrate model capabilities. We aim to conduct extensive evaluation on our systems to evaluate its capability.
+- [ ] **Evaluation:** We show some examples showcasing the multi-modal ability of our Macaw-LLM. However, we acknowledge that these efforts may not be fully adequate for accurately and comprehensively demonstrate model capabilities. We aim to conduct extensive evaluation on our systems to evaluate its capability.
     
 - [ ] **More Language Models:** We aim to extend Macaw-LLM by incorporating additional language models like Dolly, BLOOM, T-5, etc. This will enable more robust and versatile processing and understanding of multi-modal data.
 
