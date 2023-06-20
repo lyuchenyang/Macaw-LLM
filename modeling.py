@@ -983,7 +983,7 @@ class MM_LLMs(PreTrainedModel):
             # audio_features = torch.sum(audio_features, dim=1) / audio_features.size(1) 
             # audio_features = audio_features.unsqueeze(1)
 
-            audio_features = self.video_align_attention(audio_features.transpose(0, 1), 
+            audio_features = self.audio_align_attention(audio_features.transpose(0, 1), 
             token_embeddings, token_embeddings)[0].transpose(0, 1).contiguous()
 
             audio_inputs = torch.cat([torch.cat([audio_starts, audio_features], dim=1), audio_ends], dim=1)
@@ -1001,7 +1001,7 @@ class MM_LLMs(PreTrainedModel):
             image_features = self.project_image(image_features.transpose(1, 2).contiguous()).transpose(1, 2).contiguous()
 
             image_features = self.transform_image_to_hidden(image_features)
-            image_features = self.video_align_attention(image_features.transpose(0, 1),
+            image_features = self.image_align_attention(image_features.transpose(0, 1),
              token_embeddings, token_embeddings)[0].transpose(0, 1).contiguous()
 
             image_inputs = torch.cat([torch.cat([image_starts, image_features], dim=1), image_ends], dim=1)
