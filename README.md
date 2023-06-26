@@ -186,9 +186,10 @@ We would also like to thank the developers and maintainers of these projects for
 ## Citation
 
 ```bibtex
-@article{Macaw-LLM,
+@article{lyu2023macaw,
   title={Macaw-LLM: Multi-Modal Language Modeling with Image, Audio, Video, and Text Integration},
   author={Lyu, Chenyang and Wu, Minghao and Wang, Longyue and Huang, Xinting and Liu, Bingshuai and Du, Zefeng and Shi, Shuming and Tu, Zhaopeng},
-  year={2023},
+  journal={arXiv preprint arXiv:2306.09093},
+  year={2023}
 }
 ```
