@@ -498,7 +498,7 @@ def main():
     if training_args.do_eval:
         prompt = "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{}\n\n### Response:"
 
-        tokenizer = AutoTokenizer.from_pretrained('trained_models/llama_tokenizer')
+        tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
         model = trainer.get_model()
         
         dataset_name = data_args.dataset_name
