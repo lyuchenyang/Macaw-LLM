@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # coding=utf-8
-# Copyright 2020 The HuggingFace Inc. team. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-Fine-tuning the library models for causal language modeling (GPT, GPT-2, CTRL, ...) on a text file or a dataset.
 
-Here is the full list of checkpoints on the hub that can be fine-tuned by this script:
-https://huggingface.co/models?filter=text-generation
-"""
 # You can also adapt this script on your own causal language modeling task. Pointers for this are left as comments.
 
 import logging
@@ -60,7 +54,7 @@ import torch
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, TensorDataset
 from torch.utils.data.distributed import DistributedSampler
 from transformers import CLIPProcessor, CLIPModel, CLIPConfig, LlamaConfig, WhisperConfig, WhisperModel, LlamaModel, LlamaTokenizer
-from transformers import AutoConfig, AutoTokenizer, AutoModel
+from transformers import AutoConfig, AutoModel
 import torch.distributed as dist
 from torch.nn import CrossEntropyLoss
 
@@ -197,6 +191,64 @@ class ModelArguments:
         },
     )
 
+    n_frames: Optional[int] = field(
+        default=6,
+        metadata={
+            "help": "The number of frames for encoding a video."
+        },
+    )
+    attention_heads: Optional[int] = field(
+        default=220,
+        metadata={
+            "help": "The number of attention heads used in multi-head-attention."
+        },
+    )
+
+    image_conv_kernel: Optional[int] = field(
+        default=48,
+        metadata={
+            "help": "The size of the convolutional kernel for the image stream."
+        },
+    )
+    image_conv_stride: Optional[int] = field(
+        default=36,
+        metadata={
+            "help": "The stride of the convolutional kernel for the image stream."
+        },
+    )
+    video_conv_kernel: Optional[int] = field(
+        default=36,
+        metadata={
+            "help": "The size of the convolutional kernel for the video stream."
+        },
+    )
+    video_conv_stride: Optional[int] = field(
+        default=30,
+        metadata={
+            "help": "The stride of the convolutional kernel for the video stream."
+        },
+    )
+    audio_conv_kernel: Optional[int] = field(
+        default=240,
+        metadata={
+            "help": "The size of the convolutional kernel for the audio stream."
+        },
+    )
+    audio_conv_stride: Optional[int] = field(
+        default=220,
+        metadata={
+            "help": "The stride of the convolutional kernel for the audio stream."
+        },
+    )
+
+    freeze_multi_modal_encoder: bool = field(
+        default=False,
+        metadata={
+            "help": (
+                "Whether to freeze the parameters of multi-modal encoders during training.)."
+            )
+        },
+    )
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
             raise ValueError(
@@ -323,7 +375,7 @@ def load_datasets(data_args):
     return all_train_dataset
 
 
-def prepare_model_for_training(model, use_gradient_checkpointing=True):
+def prepare_model_for_training(model_args, model, use_gradient_checkpointing=True):
     r"""
     This method wraps the entire protocol for preparing a model before running a training. This includes:
         1- Cast the layernorm in fp32 2- making output embedding layer require grads 3- Add the upcasting of the lm
@@ -338,7 +390,7 @@ def prepare_model_for_training(model, use_gradient_checkpointing=True):
     for name, param in model.named_parameters():
         # freeze base model's layers
         if ('encoder' in name):
-            param.requires_grad = True
+            param.requires_grad = False if model_args.freeze_multi_modal_encoder is True else False
     # for name, param in model.named_parameters():
     #     # freeze base model's layers
     #     if ('embed_token' in name or 'lm_head' in name):
@@ -362,25 +414,7 @@ def main():
     # print(training_args)
 
     training_args.remove_unused_columns=False
-    tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
-
-    # Chenyang: 2023-05-21, add special tokens
-
-    special_tokens_dict = {'additional_special_tokens': ['<image>', '</image>', '<audio>', '</audio>', '<video>', '</video>', '[PAD]', '<s>', '</s>', '<unk>']}
-    # num_added_toks = tokenizer.add_special_tokens(special_tokens_dict)
-    # model.resize_token_embeddings(len(tokenizer))
-
-    if tokenizer.pad_token is None:
-        tokenizer.add_special_tokens(dict(pad_token=DEFAULT_PAD_TOKEN))
-    tokenizer.padding_side = "right"
-
-    tokenizer.add_special_tokens(
-        {
-            "eos_token": DEFAULT_EOS_TOKEN,
-            "bos_token": DEFAULT_BOS_TOKEN,
-            "unk_token": DEFAULT_UNK_TOKEN,
-        }
-    )
+    tokenizer = AutoTokenizer.from_pretrained('trained_models/llama_tokenizer')
 
     # Sending telemetry. Tracking the example usage helps us better allocate resources to maintain them. The
     # information sent is the one passed as arguments along with your Python/PyTorch versions.
@@ -429,7 +463,16 @@ def main():
     whisper_config = WhisperConfig.from_pretrained('trained_models/whisper_model')
     llm_config = AutoConfig.from_pretrained('trained_models/llama_model')
 
-    model_config = MM_LLMs_Config(n_frames=6, attention_heads=8, clip_config=clip_config, whisper_config=whisper_config, llm_config=llm_config)
+    model_config = MM_LLMs_Config(
+    n_frames=model_args.n_frames, 
+    attention_heads=model_args.attention_heads, 
+    image_conv_kernel=model_args.image_conv_kernel, 
+    image_conv_stride=model_args.image_conv_stride, 
+    video_conv_kernel=model_args.video_conv_kernel, 
+    video_conv_stride=model_args.video_conv_stride, 
+    audio_conv_kernel=model_args.audio_conv_kernel, 
+    audio_conv_stride=model_args.audio_conv_stride,
+    clip_config=clip_config, whisper_config=whisper_config, llm_config=llm_config)
 
     # load model separately 
     model = MM_LLMs(config=model_config)
@@ -451,7 +494,7 @@ def main():
 
     model.llm.resize_token_embeddings(len(tokenizer))
 
-    model = prepare_model_for_training(model)
+    model = prepare_model_for_training(model_args, model)
     # # lora training
     # lora_config = LoraConfig(
     #     r=8,
@@ -531,7 +574,7 @@ def main():
         trainer.save_state()
 
     if training_args.do_eval:
-        tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
+        tokenizer = AutoTokenizer.from_pretrained('trained_models/llama_tokenizer')
         model = trainer.get_model()
         image_dirs = ['None', 'None', 'None']
         video_dirs = ['None', 'data/avsd/frames/7UPGT', 'data/avsd/frames/3MSZA']
