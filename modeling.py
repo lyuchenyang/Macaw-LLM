@@ -808,12 +808,21 @@ class MM_LLMs_Config(PretrainedConfig):
     model_type = 'mm_llms'
     is_composition = True
 
-    def __init__(self, n_frames=6, attention_heads=8, clip_config=None, whisper_config=None, llm_config=None, **kwargs):
+    def __init__(self, n_frames=6, attention_heads=8, image_conv_kernel=48, image_conv_stride=36, 
+    video_conv_kernel=36, video_conv_stride=30, audio_conv_kernel=240, audio_conv_stride=220,
+    clip_config=None, whisper_config=None, llm_config=None, **kwargs):
+
         self.image_config = clip_config
         self.audio_config = whisper_config
         self.llm_config = llm_config
         self.n_frames = n_frames
         self.attention_heads = attention_heads
+        self.image_conv_kernel = image_conv_kernel
+        self.image_conv_stride = image_conv_stride
+        self.video_conv_kernel = video_conv_kernel
+        self.video_conv_stride = video_conv_stride
+        self.audio_conv_kernel = audio_conv_kernel
+        self.audio_conv_stride = audio_conv_stride
 
         self.hidden_size = max(llm_config.hidden_size, clip_config.projection_dim, whisper_config.d_model, clip_config.projection_dim)
 
@@ -832,6 +841,12 @@ class MM_LLMs_Config(PretrainedConfig):
         output['llm_config'] = self.llm_config.to_dict()
         output['n_frames'] = self.n_frames
         output['attention_heads'] = self.attention_heads
+        output['image_conv_kernel'] = self.image_conv_kernel
+        output['image_conv_stride'] = self.image_conv_stride
+        output['video_conv_kernel'] = self.video_conv_kernel
+        output['video_conv_stride'] = self.video_conv_stride
+        output['audio_conv_kernel'] = self.audio_conv_kernel
+        output['audio_conv_stride'] = self.audio_conv_stride
         output['hidden_size'] = self.hidden_size
         output["model_type"] = self.__class__.model_type
         return output
@@ -871,36 +886,42 @@ class MM_LLMs(PreTrainedModel):
                                                              add_zero_attn=is_add_zero_attn)
 
         self.video_align_attention = nn.MultiheadAttention(config.llm_config.hidden_size, 
-                                                             config.attention_heads,
+                                                             config.attention_heads * 2,
                                                              dropout=attn_dropout,
                                                              add_bias_kv=is_add_bias_kv,
                                                              add_zero_attn=is_add_zero_attn)
 
         self.audio_align_attention = nn.MultiheadAttention(config.llm_config.hidden_size, 
-                                                             config.attention_heads,
+                                                             config.attention_heads * 2,
                                                              dropout=attn_dropout,
                                                              add_bias_kv=is_add_bias_kv,
                                                              add_zero_attn=is_add_zero_attn)
 
         self.image_align_attention = nn.MultiheadAttention(config.llm_config.hidden_size, 
-                                                             config.attention_heads,
+                                                             config.attention_heads * 2,
                                                              dropout=attn_dropout,
                                                              add_bias_kv=is_add_bias_kv,
                                                              add_zero_attn=is_add_zero_attn)
         
+        self.video_long_self_attention = nn.MultiheadAttention(config.image_config.projection_dim,
+                                                            config.attention_heads,
+                                                            dropout=attn_dropout,
+                                                            add_bias_kv=is_add_bias_kv,
+                                                            add_zero_attn=is_add_zero_attn)
+
         self.transform_video_to_hidden = nn.Linear(config.image_config.projection_dim, 
                                                    config.llm_config.hidden_size)
         self.transform_audio_to_hidden = nn.Linear(config.audio_config.d_model, 
                                                    config.llm_config.hidden_size)
         self.transform_image_to_hidden = nn.Linear(config.image_config.projection_dim, 
                                                    config.llm_config.hidden_size)
-        
+
         self.project_image = nn.Conv1d(config.image_config.projection_dim, config.image_config.projection_dim, 
-        kernel_size=48, stride=36)
+        kernel_size=config.image_conv_kernel, stride=config.image_conv_stride)
         self.project_video = nn.Conv1d(config.image_config.projection_dim, config.image_config.projection_dim, 
-        kernel_size=36, stride=30)
+        kernel_size=config.video_conv_kernel, stride=config.video_conv_stride)
         self.project_audio = nn.Conv1d(config.audio_config.d_model, config.audio_config.d_model, 
-        kernel_size=240, stride=220)
+        kernel_size=config.audio_conv_kernel, stride=config.audio_conv_stride)
 
         
         self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1 / 0.07))
@@ -945,7 +966,7 @@ class MM_LLMs(PreTrainedModel):
 
         image_features = self.encode_image(inputs['images']) if inputs['images'] is not None else None
         audio_features = self.encode_audio(inputs['audios']) if inputs['audios'] is not None else None
-        video_features = self.encode_video(inputs['videos']) if inputs['videos'] is not None else None
+        video_features = self.encode_video_long(inputs['videos']) if inputs['videos'] is not None else None
         # embed_tokens = self.llm.model.model.embed_tokens
         embed_tokens = self.llm.model.embed_tokens
         text_embeddings = embed_tokens(inputs['input_ids'])
@@ -958,7 +979,7 @@ class MM_LLMs(PreTrainedModel):
             video_starts = embed_tokens(inputs['video_starts']).unsqueeze(1)
             video_ends = embed_tokens(inputs['video_ends']).unsqueeze(1)
 
-            # video_features = self.project_video(video_features.transpose(1, 2).contiguous()).transpose(1, 2).contiguous()
+            video_features = self.project_video(video_features.transpose(1, 2).contiguous()).transpose(1, 2).contiguous()
 
             video_features = self.transform_video_to_hidden(video_features)
             
@@ -1053,7 +1074,9 @@ class MM_LLMs(PreTrainedModel):
         video_features = video_features.reshape(videos.size(0) // self.config.n_frames,
                                                                           self.config.n_frames * video_features.size(1), -1).contiguous()
         
-        return video_features
+        video_features = add_positional_encoding(video_features).transpose(0, 1).contiguous()
+        video_self_attn_features = self.video_long_self_attention(video_features, video_features, video_features)[0].transpose(0, 1).contiguous()
+        return video_self_attn_features
 
     def encode_audio(self, audios):
         audio_features = self.audio_encoder.encoder(audios)
@@ -1068,3 +1091,28 @@ class MM_LLMs(PreTrainedModel):
 
         image_features = self.image_encoder.visual_projection(self.image_encoder.vision_model(images)[0])[:, 1:, :]
         return image_features
+
+def create_positional_encoding(L, h):
+    # Create a tensor to store the position encoding
+    position_encoding = torch.zeros(L, h)
+
+    # Fill the position encoding tensor
+    for pos in range(L):
+        for i in range(0, h, 2):
+            div_term = torch.exp(torch.tensor(-(math.log(10000.0) / h * (2 * i))))
+            position_encoding[pos, i] = torch.sin(pos * div_term)
+            position_encoding[pos, i + 1] = torch.cos(pos * div_term)
+
+    return position_encoding
+
+def add_positional_encoding(tensor):
+    N, L, h = tensor.size()  # batch size, sequence length, and feature dimension
+
+    # Create position embedding tensor
+    position_embedding = create_positional_encoding(L, h).to(tensor.device).to(tensor.dtype)
+
+    # Expand position embedding to match input tensor dimensions
+    position_embedding = position_embedding.unsqueeze(0).expand(N, -1, -1)
+
+    # Add position embedding to the input tensor
+    return tensor + position_embedding
