@@ -197,7 +197,64 @@ class ModelArguments:
             "choices": ["auto", "bfloat16", "float16", "float32"],
         },
     )
+    n_frames: Optional[int] = field(
+        default=6,
+        metadata={
+            "help": "The number of frames for encoding a video."
+        },
+    )
+    attention_heads: Optional[int] = field(
+        default=220,
+        metadata={
+            "help": "The number of attention heads used in multi-head-attention."
+        },
+    )
 
+    image_conv_kernel: Optional[int] = field(
+        default=48,
+        metadata={
+            "help": "The size of the convolutional kernel for the image stream."
+        },
+    )
+    image_conv_stride: Optional[int] = field(
+        default=36,
+        metadata={
+            "help": "The stride of the convolutional kernel for the image stream."
+        },
+    )
+    video_conv_kernel: Optional[int] = field(
+        default=36,
+        metadata={
+            "help": "The size of the convolutional kernel for the video stream."
+        },
+    )
+    video_conv_stride: Optional[int] = field(
+        default=30,
+        metadata={
+            "help": "The stride of the convolutional kernel for the video stream."
+        },
+    )
+    audio_conv_kernel: Optional[int] = field(
+        default=240,
+        metadata={
+            "help": "The size of the convolutional kernel for the audio stream."
+        },
+    )
+    audio_conv_stride: Optional[int] = field(
+        default=220,
+        metadata={
+            "help": "The stride of the convolutional kernel for the audio stream."
+        },
+    )
+
+    freeze_multi_modal_encoder: bool = field(
+        default=False,
+        metadata={
+            "help": (
+                "Whether to freeze the parameters of multi-modal encoders during training.)."
+            )
+        },
+    )
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
             raise ValueError(
@@ -390,7 +447,16 @@ def main():
     whisper_config = WhisperConfig.from_pretrained('trained_models/whisper_model')
     llm_config = AutoConfig.from_pretrained('trained_models/llama_model')
 
-    model_config = MM_LLMs_Config(n_frames=6, attention_heads=8, clip_config=clip_config, whisper_config=whisper_config, llm_config=llm_config)
+    model_config = MM_LLMs_Config(
+    n_frames=model_args.n_frames, 
+    attention_heads=model_args.attention_heads, 
+    image_conv_kernel=model_args.image_conv_kernel, 
+    image_conv_stride=model_args.image_conv_stride, 
+    video_conv_kernel=model_args.video_conv_kernel, 
+    video_conv_stride=model_args.video_conv_stride, 
+    audio_conv_kernel=model_args.audio_conv_kernel, 
+    audio_conv_stride=model_args.audio_conv_stride,
+    clip_config=clip_config, whisper_config=whisper_config, llm_config=llm_config)
 
     model = MM_LLMs.from_pretrained(
         training_args.output_dir,
@@ -440,18 +506,18 @@ def main():
 
         tokenizer = AutoTokenizer.from_pretrained('trained_models/llama_tokenizer')
         model = trainer.get_model()
+        
         dataset_name = data_args.dataset_name
         val_dir = 'data/{}/{}_val_inference.json'.format(dataset_name, dataset_name)
         all_val_examples = json_load(val_dir)['data']
 
-        all_val_examples = all_val_examples[:100]
+        all_val_examples = all_val_examples[:2000]
         image_dirs = [e['image'] for e in all_val_examples]
         video_dirs = [e['video'] for e in all_val_examples]
         audio_dirs = [e['audio'] for e in all_val_examples]
         instructions = [prompt.format(e['instruction']) for e in all_val_examples]
         responses = [e['response'] for e in all_val_examples]
         print(len(all_val_examples))
-        # batch_inference_generation(training_args, model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions, responses, batch_size, dataset_name)
         inference_generation(training_args, model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions, responses, dataset_name)
 
 def _mp_fn(index):
