@@ -574,7 +574,7 @@ def main():
         trainer.save_state()
 
     if training_args.do_eval:
-        tokenizer = AutoTokenizer.from_pretrained('trained_models/llama_tokenizer')
+        tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
         model = trainer.get_model()
         image_dirs = ['None', 'None', 'None']
         video_dirs = ['None', 'data/avsd/frames/7UPGT', 'data/avsd/frames/3MSZA']
