@@ -261,18 +261,22 @@ class DataTrainingArguments:
     """
     Arguments pertaining to what data we are going to input our model for training and eval.
     """
-
-    dataset_name: Optional[str] = field(
-        default=None, metadata={"help": "The name of the dataset to use (via the datasets library)."}
-    )
-    dataset_config_name: Optional[str] = field(
-        default=None, metadata={"help": "The configuration name of the dataset to use (via the datasets library)."}
-    )
-    train_file: Optional[str] = field(default=None, metadata={"help": "The input training data file (a text file)."})
+    train_file: Optional[str] = field(
+        default=None, 
+        metadata={"help": "The input training data file (a text file)."})
     validation_file: Optional[str] = field(
         default=None,
         metadata={"help": "An optional input evaluation data file to evaluate the perplexity on (a text file)."},
     )
+    text_instruction_file: Optional[str] = field(
+        default=None, 
+        metadata={"help": "The text instruction data file (a json file)."})
+    image_instruction_file: Optional[str] = field(
+        default=None, 
+        metadata={"help": "The image instruction data file (a json file)."})
+    video_instruction_file: Optional[str] = field(
+        default=None, 
+        metadata={"help": "The video instruction data file (a json file)."})
     max_train_samples: Optional[int] = field(
         default=None,
         metadata={
@@ -335,42 +339,35 @@ def draw_samples(lis, ratio):
 
     return n_lis
 
-def load_datasets(data_args):
+def load_datasets(data_args, tokenizer):
     from datasets.dataset_dict import DatasetDict
     from datasets import Dataset
+    from preprocess_data_unsupervised import tokenize_all_datasets
 
     data_dir = data_args.train_file
-    video_names = ["data/avsd/train_video_names.json", "data/vqa/vqa_video_names.json"]
-    all_train_dataset = pickle.load(
-        open(data_dir, 'rb'))
+
+    if data_dir is None:
+        all_train_dataset, _ = tokenize_all_datasets(data_args)
+    else:
+        all_train_dataset = pickle.load(
+            open(data_dir, 'rb'))
     print(type(all_train_dataset))
     for k in all_train_dataset:
         print(k, all_train_dataset[k][0])
 
-    # labels = copy.deepcopy(all_train_dataset["input_ids"])
-    # all_train_dataset['labels'] = labels
-
-    pad_token_id = 32006
+    pad_token_id = tokenizer.pad_token_id
     all_train_dataset['labels'] = [[(l if l != pad_token_id else IGNORE_INDEX) for l in label] 
     for label in all_train_dataset['labels']]
 
-    vname = json_load(video_names[0])['data']
-    vname.extend(json_load(video_names[1])['data'])
-    visual_data_names = {'data': vname}
 
     all_train_dataset['images'] = [[e] for e in all_train_dataset['images']]
     all_train_dataset['audios'] = [[e] for e in all_train_dataset['audios']]
     all_train_dataset['videos'] = [[e] for e in all_train_dataset['videos']]
 
-
-    # all_train_dataset = TensorDataset(all_train_dataset['images'], all_train_dataset['audios'], 
-    # all_train_dataset['videos'], all_train_dataset['input_ids'], all_train_dataset['labels'])
-
-    eval_offset = 200
     train_dataset = {'train': Dataset.from_dict({k: all_train_dataset[k] for k in all_train_dataset})}
 
     train_dataset = DatasetDict(train_dataset)
-    all_train_dataset = (train_dataset['train'], visual_data_names)
+    all_train_dataset = train_dataset['train']
 
     return all_train_dataset
 
@@ -526,7 +523,7 @@ def main():
         labels = labels[:, 1:].reshape(-1)
         preds = preds[:, :-1].reshape(-1)
         return metric.compute(predictions=preds, references=labels)
-    train_dataset, visual_names = load_datasets(data_args)
+    train_dataset = load_datasets(data_args, tokenizer)
 
     if training_args.do_train:
         if data_args.max_train_samples is not None:
