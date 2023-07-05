@@ -131,7 +131,6 @@ class ModelArguments:
     """
     Arguments pertaining to which model/config/tokenizer we are going to fine-tune, or train from scratch.
     """
-
     model_name_or_path: Optional[str] = field(
         default=None,
         metadata={
@@ -142,7 +141,35 @@ class ModelArguments:
     )
     model_type: Optional[str] = field(
         default=None,
-        metadata={"help": "If training from scratch, pass a model type from the list: " + ", ".join(MODEL_TYPES)},
+        metadata={
+            "help": (
+                "The model checkpoint for weights initialization.Don't set if you want to train a model from scratch."
+            )
+        },
+    )
+    llm_model_name_or_path: Optional[str] = field(
+        default='trained_models/llama_model',
+        metadata={
+            "help": (
+                "The model checkpoint for weights initialization."
+            )
+        },
+    )
+    vision_model_name_or_path: Optional[str] = field(
+        default='trained_models/clip-vit-base-patch16',
+        metadata={
+            "help": (
+                "The model checkpoint for weights initialization."
+            )
+        },
+    )
+    audio_model_name_or_path: Optional[str] = field(
+        default='trained_models/whisper-base',
+        metadata={
+            "help": (
+                "The model checkpoint for weights initialization."
+            )
+        },
     )
     config_overrides: Optional[str] = field(
         default=None,
@@ -277,6 +304,14 @@ class DataTrainingArguments:
     video_instruction_file: Optional[str] = field(
         default=None, 
         metadata={"help": "The video instruction data file (a json file)."})
+    max_seq_len: Optional[int] = field(
+        default=256,
+        metadata={
+            "help": (
+                "The maximum sequence length for instruction and response."
+            )
+        },
+    )
     max_train_samples: Optional[int] = field(
         default=None,
         metadata={
@@ -339,7 +374,7 @@ def draw_samples(lis, ratio):
 
     return n_lis
 
-def load_datasets(data_args, tokenizer):
+def load_datasets(model_args, data_args, tokenizer):
     from datasets.dataset_dict import DatasetDict
     from datasets import Dataset
     from preprocess_data_unsupervised import tokenize_all_datasets
@@ -347,7 +382,7 @@ def load_datasets(data_args, tokenizer):
     data_dir = data_args.train_file
 
     if data_dir is None:
-        all_train_dataset, _ = tokenize_all_datasets(data_args)
+        all_train_dataset, _ = tokenize_all_datasets(model_args, data_args)
     else:
         all_train_dataset = pickle.load(
             open(data_dir, 'rb'))
@@ -411,7 +446,7 @@ def main():
     # print(training_args)
 
     training_args.remove_unused_columns=False
-    tokenizer = AutoTokenizer.from_pretrained('trained_models/llama_tokenizer')
+    tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name)
 
     # Sending telemetry. Tracking the example usage helps us better allocate resources to maintain them. The
     # information sent is the one passed as arguments along with your Python/PyTorch versions.
@@ -456,9 +491,9 @@ def main():
     # download model & vocab.
 
     # load model
-    clip_config = CLIPConfig.from_pretrained('trained_models/clip_model')
-    whisper_config = WhisperConfig.from_pretrained('trained_models/whisper_model')
-    llm_config = AutoConfig.from_pretrained('trained_models/llama_model')
+    clip_config = CLIPConfig.from_pretrained(model_args.vision_model_name_or_path)
+    whisper_config = WhisperConfig.from_pretrained(model_args.audio_model_name_or_path)
+    llm_config = AutoConfig.from_pretrained(model_args.llm_model_name_or_path)
 
     model_config = MM_LLMs_Config(
     n_frames=model_args.n_frames, 
@@ -474,10 +509,10 @@ def main():
     # load model separately 
     model = MM_LLMs(config=model_config)
 
-    model.image_encoder.from_pretrained('trained_models/clip-vit-base-patch16')
-    model.video_encoder.from_pretrained('trained_models/clip-vit-base-patch16')
-    model.audio_encoder.from_pretrained('trained_models/whisper-base')
-    model.llm.from_pretrained('trained_models/llama_model')
+    model.image_encoder.from_pretrained(model_args.vision_model_name_or_path)
+    model.video_encoder.from_pretrained(model_args.vision_model_name_or_path)
+    model.audio_encoder.from_pretrained(model_args.audio_model_name_or_path)
+    model.llm.from_pretrained(model_args.llm_model_name_or_path)
 
     # # load the whole model together
     # model = MM_LLMs.from_pretrained(
@@ -571,7 +606,7 @@ def main():
         trainer.save_state()
 
     if training_args.do_eval:
-        tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
+        tokenizer = LlamaTokenizer.from_pretrained(model_args.tokenizer_name)
         model = trainer.get_model()
         image_dirs = ['None', 'None', 'None']
         video_dirs = ['None', 'data/avsd/frames/7UPGT', 'data/avsd/frames/3MSZA']
