@@ -42,7 +42,7 @@ def preprocess_coco_to_tensor_dataset(data_args, all_visual_names, tokenizer):
     train_metadata_dir = 'data/generated_examples_coco.json' if data_args.video_instruction_file is None else data_args.video_instruction_file
     all_examples = json_load(train_metadata_dir)['data']
 
-    max_length = 256
+    max_length = data_args.max_seq_len
     all_images, all_null_audios, all_null_videos = [], [], []
     all_texts, all_labels = [], []
 
@@ -98,7 +98,7 @@ def preprocess_alpaca_to_tensor_dataset(data_args, tokenizer):
 
     all_examples = json_load(train_metadata_dir)
 
-    max_length = 256
+    max_length = data_args.max_seq_len
     all_null_images, all_null_audios, all_null_videos = [], [], []
     all_texts, all_labels = [], []
 
@@ -162,7 +162,7 @@ def preprocess_avsd_to_tensor_dataset(data_args, all_visual_names, tokenizer):
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     torch.random.manual_seed(0)
-    max_length = 256
+    max_length = data_args.max_seq_len
     def read_image_and_audio(metadata_dir):
         metadata = json_load(metadata_dir)['data']
 
@@ -214,9 +214,9 @@ def preprocess_avsd_to_tensor_dataset(data_args, all_visual_names, tokenizer):
     return all_textual_inputs, all_native_labels, all_images, all_audios, all_videos
 
 
-def preprocess_all_datasets(data_args):
+def preprocess_all_datasets(model_args, data_args):
     all_visual_names = json_load('data/all_visual_names_instruction.json')['dict']
-    tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
+    tokenizer = LlamaTokenizer.from_pretrained(model_args.tokenizer_name)
 
     # Chenyang: 2023-05-21, add special tokens
 
@@ -234,7 +234,7 @@ def preprocess_all_datasets(data_args):
         }
     )
 
-    tokenizer.save_pretrained('trained_models/llama_tokenizer')
+    tokenizer.save_pretrained(model_args.tokenizer_name)
 
     all_image_data = preprocess_coco_to_tensor_dataset(data_args, all_visual_names, tokenizer)
     all_text_data = preprocess_alpaca_to_tensor_dataset(data_args, tokenizer)
@@ -274,7 +274,7 @@ def preprocess_all_datasets(data_args):
             all_dataset.append(new_lis)
         i += 1
 
-    max_length = 256
+    max_length = data_args.max_seq_len
     tokenized_texts = tokenizer(all_dataset[0], max_length=max_length, padding='max_length', truncation=True)
     tokenized_texts['labels'] = all_dataset[1]
     
