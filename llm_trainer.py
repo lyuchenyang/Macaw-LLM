@@ -162,8 +162,12 @@ audio_dir = 'data/avsd/audios/'
 
 
 visual_name_dir = "data/all_visual_names_instruction.json"
+# vname = json_load(visual_name_dir)['list']
+# train_video_names = {'data': vname}
+
+visual_name_dir = 'data/all_visual_names_vicuna_new.json'
 vname = json_load(visual_name_dir)['list']
-train_video_names = {'data': vname}
+train_visual_names = {'data': vname}
 
 preprocess = _transform(224)
 device = torch.device("cuda")
@@ -315,7 +319,7 @@ class LLMTrainer(Trainer):
                     _all_video_frames.append(torch.zeros(1, 3, 224, 224))
                     continue
                 frame = preprocess(
-                    Image.open('{}{}.mp4_{}.jpg'.format(image_dir, train_video_names['data'][vid], str(vfi))))
+                    Image.open('{}{}.mp4_{}.jpg'.format(image_dir, train_visual_names['data'][vid], str(vfi))))
                 _all_video_frames.append(frame.unsqueeze(0))
             _all_video_frames = torch.cat(_all_video_frames, dim=0).unsqueeze(0)
             all_video_frames.append(_all_video_frames)
@@ -332,7 +336,7 @@ class LLMTrainer(Trainer):
                 all_audio_mels.append(torch.zeros(1, 80, 3000))
                 continue
             # load audio and pad/trim it to fit 30 seconds
-            audio = whisper.load_audio("{}{}.mp4.wav".format(audio_dir, train_video_names['data'][aid]))
+            audio = whisper.load_audio("{}{}.mp4.wav".format(audio_dir, train_visual_names['data'][aid]))
 
             # audio = whisper.load_audio("data/avsd/videos/audios/{}.wav".format(vn))
             audio = whisper.pad_or_trim(audio)
@@ -351,7 +355,7 @@ class LLMTrainer(Trainer):
             if vid == -1:
                 all_images.append(torch.zeros(1, 3, 224, 224))
                 continue
-            _image_dir = train_video_names['data'][vid]
+            _image_dir = train_visual_names['data'][vid]
             # if len(_image_dir.split('_')[-1].split('.')[0]) < 12:
             #     i_str = _image_dir.split('_')[-1].split('.')[0]
             #     n_str = '0' * (12 - len(i_str)) + i_str
@@ -502,7 +506,9 @@ def inference_generation(args, model, tokenizer, image_dirs, audio_dirs, video_d
                 'true_response': true_response
             }
             all_eval_outs.append(e)
-        json_dump(all_eval_outs, 'eval_outputs/{}_eval_outputs_1by1.json'.format(dataset))
+
+            post_fix = args.output_dir.split("mm_llms_trainer_")[-1].replace('/', '_')
+            # json_dump(all_eval_outs, 'eval_outputs/{}_eval_outputs_1by1_{}.json'.format(dataset, post_fix))
 
 def batch_inference_generation(args, model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions, responses, batch_size, dataset):
     all_eval_outs = []
