@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # coding=utf-8
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-# You can also adapt this script on your own causal language modeling task. Pointers for this are left as comments.
 
 import logging
 import math
@@ -158,7 +155,7 @@ class ModelArguments:
         default=None, metadata={"help": "Pretrained config name or path if not the same as model_name"}
     )
     tokenizer_name: Optional[str] = field(
-        default=None, metadata={"help": "Pretrained tokenizer name or path if not the same as model_name"}
+        default='trained_models/llama_model/', metadata={"help": "Pretrained tokenizer name or path if not the same as model_name"}
     )
     cache_dir: Optional[str] = field(
         default=None,
@@ -367,7 +364,6 @@ def load_datasets(data_args):
     # all_train_dataset = TensorDataset(all_train_dataset['images'], all_train_dataset['audios'], 
     # all_train_dataset['videos'], all_train_dataset['input_ids'], all_train_dataset['labels'])
 
-    eval_offset = 200
     train_dataset = {'train': Dataset.from_dict({k: all_train_dataset[k] for k in all_train_dataset})}
 
     train_dataset = DatasetDict(train_dataset)
@@ -392,7 +388,7 @@ def main():
     # print(training_args)
 
     training_args.remove_unused_columns=False
-    tokenizer = AutoTokenizer.from_pretrained('trained_models/llama_tokenizer')
+    tokenizer = LlamaTokenizer.from_pretrained(model_args.tokenizer_name)
 
     # Sending telemetry. Tracking the example usage helps us better allocate resources to maintain them. The
     # information sent is the one passed as arguments along with your Python/PyTorch versions.
@@ -498,9 +494,43 @@ def main():
     if training_args.do_eval:
         prompt = "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{}\n\n### Response:"
 
-        tokenizer = LlamaTokenizer.from_pretrained('trained_models/llama_tokenizer')
+        # tokenizer = LlamaTokenizer.from_pretrained(model_args.tokenizer_name)
         model = trainer.get_model()
-        
+        # image_dirs = ['None', 'None', 'data/avsd/frames/3MSZA.mp4_102.jpg', 'None', 'None', 'None']
+        # video_dirs = ['data/tvd/frames/BoyMakingUp1_3840x2160_50fps_10bit_420', 'None', 'None', 'data/avsd/frames/7UPGT', 'data/avsd/frames/3MSZA']
+        # audio_dirs = ['None', 'None', 'None', 'data/avsd/audios/7UPGT', 'data/avsd/audios/3MSZA']
+
+        # instructions = [prompt.format('What is in this video?'), 
+        #     prompt.format('Is Donald Trump the president of India?'), 
+        #     prompt.format('Give me three tips for hardworking.'), 
+        #     prompt.format('Which season is hotter, winter or summer?'), 
+        #     prompt.format('Does the woman eat or drink anything?'),
+        #     prompt.format('What\'s on the table next to her?')]
+
+
+        # video_dirs = ['./data/sample_videos/frames/pexels-sarowar-hussain-5946371-3840x2160-30fps', './data/sample_videos/frames/pexels-videogrammer-nft-1721303-1920x1080-25fps', './data/sample_videos/frames/pexels-street-donkey-3706265-1920x1080-30fps', './data/sample_videos/frames/pexels-super-lunar-4835989-1920x1080-25fps', './data/sample_videos/frames/pexels-pixabay-855600-1920x1080-50fps', './data/sample_videos/frames/pexels-yeşim-kabaca-3093861-3840x2160-60fps', './data/sample_videos/frames/pexels-hans-muggesen-1722591-1920x1080-30fps', './data/sample_videos/frames/pexels-åke-wall-3431124-1920x1080-30fps']
+        # image_dirs = ['None'] * len(video_dirs)
+        # audio_dirs = [vd.replace('frames', 'audios') + '.mp4.wav' for vd in video_dirs]
+
+        # ask_questions = [
+        #     'Can you describe the waterfall in this video?',
+        #     'What are they doing on the street?',
+        #     'Do you hear any sound of water flowing?',
+        #     'Is the dog barking in the video?',
+        #     'How many boats are in this video?',
+        #     'Are there any people on the beach?',
+        #     'Are the boy in this video playing music?',
+        #     'What kind of sound do you hear?'
+        # ]
+        # instructions = [prompt.format(ask_questions[i]) for i in range(len(video_dirs))]
+
+        # start_index = 0
+        # inference_generation(training_args, model, tokenizer, image_dirs[start_index:], audio_dirs[start_index:], video_dirs[start_index:], instructions[start_index:], instructions[start_index:], data_args.dataset_name)
+
+        # exit()
+
+        batch_size = 24
+        # dataset_name = 'avsd'
         dataset_name = data_args.dataset_name
         val_dir = 'data/{}/{}_val_inference.json'.format(dataset_name, dataset_name)
         all_val_examples = json_load(val_dir)['data']
@@ -512,6 +542,7 @@ def main():
         instructions = [prompt.format(e['instruction']) for e in all_val_examples]
         responses = [e['response'] for e in all_val_examples]
         print(len(all_val_examples))
+        # batch_inference_generation(training_args, model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions, responses, batch_size, dataset_name)
         inference_generation(training_args, model, tokenizer, image_dirs, audio_dirs, video_dirs, instructions, responses, dataset_name)
 
 def _mp_fn(index):
