@@ -93,6 +93,7 @@ from peft import (
 )
 
 from modeling import MM_LLMs, MM_LLMs_Config
+from pre_process_data import tokenize_all_datasets
 import clip
 import whisper
 
@@ -304,6 +305,10 @@ class DataTrainingArguments:
     video_instruction_file: Optional[str] = field(
         default=None, 
         metadata={"help": "The video instruction data file (a json file)."})
+    visual_names_file: Optional[str] = field(
+        default=None,
+        metadata={"help": "The file directory including the names for images and videos."},
+    )
     max_seq_len: Optional[int] = field(
         default=256,
         metadata={
@@ -377,11 +382,11 @@ def draw_samples(lis, ratio):
 def load_datasets(model_args, data_args, tokenizer):
     from datasets.dataset_dict import DatasetDict
     from datasets import Dataset
-    from preprocess_data_unsupervised import tokenize_all_datasets
+    from pre_process_data import tokenize_all_datasets
 
     data_dir = data_args.train_file
 
-    if data_dir is None:
+    if data_dir is None or not os.path.exists(data_dir):
         all_train_dataset, _ = tokenize_all_datasets(model_args, data_args)
     else:
         all_train_dataset = pickle.load(
@@ -446,7 +451,9 @@ def main():
     # print(training_args)
 
     training_args.remove_unused_columns=False
-    tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name)
+    tokenizer = LlamaTokenizer.from_pretrained(model_args.tokenizer_name)
+
+    training_args.visual_names_file = data_args.visual_names_file
 
     # Sending telemetry. Tracking the example usage helps us better allocate resources to maintain them. The
     # information sent is the one passed as arguments along with your Python/PyTorch versions.
@@ -493,7 +500,7 @@ def main():
     # load model
     clip_config = CLIPConfig.from_pretrained(model_args.vision_model_name_or_path)
     whisper_config = WhisperConfig.from_pretrained(model_args.audio_model_name_or_path)
-    llm_config = AutoConfig.from_pretrained(model_args.llm_model_name_or_path)
+    llm_config = LlamaConfig.from_pretrained(model_args.llm_model_name_or_path)
 
     model_config = MM_LLMs_Config(
     n_frames=model_args.n_frames, 
@@ -558,7 +565,7 @@ def main():
         labels = labels[:, 1:].reshape(-1)
         preds = preds[:, :-1].reshape(-1)
         return metric.compute(predictions=preds, references=labels)
-    train_dataset = load_datasets(data_args, tokenizer)
+    train_dataset = load_datasets(model_args, data_args, tokenizer)
 
     if training_args.do_train:
         if data_args.max_train_samples is not None:
