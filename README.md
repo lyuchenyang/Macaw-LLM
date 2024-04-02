@@ -19,7 +19,7 @@
 
 **_¹ ² [Chenyang Lyu](https://lyuchenyang.github.io), ³ [Minghao Wu](https://minghao-wu.github.io/), ¹ <sup>*</sup> [Longyue Wang](http://www.longyuewang.com/), ¹ [Xinting Huang](https://timhuang1.github.io/),_**
 
-**_¹ [Bingshuai Liu](bsliu.github.io), ¹ [Zefeng Du](https://seeledu.github.io/index-en.html), ¹ [Shuming Shi](https://shumingshi.github.io/), ¹ [Zhaopeng Tu](http://www.zptu.net/)_**
+**_¹ [Bingshuai Liu](bingshuailiu.github.io), ¹ [Zefeng Du](https://seeledu.github.io/index-en.html), ¹ [Shuming Shi](https://shumingshi.github.io/), ¹ [Zhaopeng Tu](http://www.zptu.net/)_**
 
 
 <!-- **Affiliations:** -->
