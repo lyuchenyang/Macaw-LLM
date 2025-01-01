@@ -15,7 +15,6 @@
 <img src="https://img.shields.io/badge/python-3.8-purple.svg" alt="Python">
 
   
-  
 <!-- **Authors:** -->
 
 **_¹ ² [Chenyang Lyu](https://lyuchenyang.github.io), ³ [Minghao Wu](https://minghao-wu.github.io/), ¹ <sup>*</sup> [Longyue Wang](http://www.longyuewang.com/), ¹ [Xinting Huang](https://timhuang1.github.io/),_**
