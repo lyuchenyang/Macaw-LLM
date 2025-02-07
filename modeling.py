@@ -824,7 +824,7 @@ class MM_LLMs_Config(PretrainedConfig):
         self.audio_conv_kernel = audio_conv_kernel
         self.audio_conv_stride = audio_conv_stride
 
-        self.hidden_size = max(llm_config.hidden_size, clip_config.projection_dim, whisper_config.d_model, clip_config.projection_dim)
+        self.hidden_size = max(llm_config.hidden_size, clip_config.projection_dim, whisper_config.d_model)
 
         super().__init__(**kwargs)
 
